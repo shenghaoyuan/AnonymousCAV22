@@ -16,6 +16,7 @@ There are also some folders:
 
 1. `comm`: all comm definitions and functions shared by above three models, e.g. `State`, `Monad`, etc.
 2. `repatch`: repatching the dx-extracted C implementation in order to make it executable.
+3. `benchmark data`: all experiment data from our benchmark.
 
 ## Installation
 
@@ -25,7 +26,7 @@ To install CertirBPF (and dx), you will require:
 -   Linux (e.g. Ubuntu)
 -   `make` (and standard tools: `sed`, `awk`, `cat`)
 -   Coq
--   [coq-elpi]
+-   coq-elpi
 -   CompCert32 (version 3.9)
 -   VST32 (version 2.8)
 -   OCaml compiler

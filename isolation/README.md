@@ -24,7 +24,7 @@ Theorem inv_avoid_undef:
 where `register_inv` is the register invariant and `memory_inv` is the memory invariant for Certirbpf.
 
 ## File struct
-- `CommonLib.v`: some common lemmas
+- `CommonISOLib.v`: some common lemmas
 - `AlignChunk.v`: some definitions and lemmas about **Memory Aligned**
 - `RegsInv.v`: the register invariant and related lemmas
 - `MemInv.v`: the memory invariant and related lemmas

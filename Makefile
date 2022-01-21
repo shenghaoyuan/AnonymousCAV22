@@ -135,8 +135,6 @@ correctproof:
 	$(COQMAKEFILE) -f _CoqProject $(PROOF) COQEXTRAFLAGS = '-w all,-extraction'  -o CoqMakefilePrf
 	make -f CoqMakefilePrf
 
-GITDIR=/home/shyuan/GitLab/rbpf-dx
-
 clean :
 	@echo $@
 	make -f CoqMakefile clean

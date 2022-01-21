@@ -3,6 +3,6 @@
 -R equivalence bpf.equivalence
 -R isolation bpf.isolation
 -R src bpf.src
--R /home/shyuan/.opam/4.11.1/lib/coq-variant/compcert32/compcert compcert
+-R /home/login/.opam/4.11.1/lib/coq-variant/compcert32/compcert compcert
 -R proof bpf.proof
 -R clight bpf.clight
