@@ -23,7 +23,7 @@ From compcert Require Import Integers Values.
 From dx Require Import ResultMonad IR.
 From dx.Type Require Import Bool.
 
-From bpf.src Require Import CoqIntegers.
+From bpf.src Require Import CoqIntegers DxIntegers.
 From Coq Require Import ZArith.
 
 (* Derive Nat as unsigned int *)
@@ -43,6 +43,7 @@ Definition nat8_zero := 0x00.
 Definition nat8_0x05 := 0x05.
 Definition nat8_0x84 := 0x84.
 Definition nat8_0x87 := 0x87.
+Definition nat8_0x85 := 0x85.
 Definition nat8_0x95 := 0x95.
 
 Definition nat8CompilableType :=
@@ -73,6 +74,9 @@ Definition C_NAT8_0x84: Csyntax.expr :=
 Definition C_NAT8_0x87: Csyntax.expr :=
   Csyntax.Eval (Vint (Int.repr (Z.of_nat nat8_0x87))) C_U8.
 
+Definition C_NAT8_0x85: Csyntax.expr :=
+  Csyntax.Eval (Vint (Int.repr (Z.of_nat nat8_0x85))) C_U8.
+
 Definition C_NAT8_0x95: Csyntax.expr :=
   Csyntax.Eval (Vint (Int.repr (Z.of_nat nat8_0x95))) C_U8.
 
@@ -89,6 +93,7 @@ Definition Const_nat8_zero := constant nat8SymbolType nat8_zero C_NAT8_0x00.
 Definition Const_nat8_0x05 := constant nat8SymbolType nat8_0x05 C_NAT8_0x05.
 Definition Const_nat8_0x84 := constant nat8SymbolType nat8_0x84 C_NAT8_0x84.
 Definition Const_nat8_0x87 := constant nat8SymbolType nat8_0x87 C_NAT8_0x87.
+Definition Const_nat8_0x85 := constant nat8SymbolType nat8_0x85 C_NAT8_0x85.
 Definition Const_nat8_0x95 := constant nat8SymbolType nat8_0x95 C_NAT8_0x95.
 
 Definition nat8Tonat8ToboolSymbolType :=
@@ -119,6 +124,19 @@ Definition Const_nat8_and :=
                            | _       => Err PrimitiveEncodingFailed
                            end).
 
+Definition nat2int (n:nat) := (Int.repr (Z.of_nat n)).
+
+Definition nat8Touint32SymbolType :=
+  MkCompilableSymbolType [nat8CompilableType] (Some uint32CompilableType).
+
+Definition Const_nat2int :=
+  MkPrimitive nat8Touint32SymbolType
+                nat2int
+                (fun es => match es with
+                           | [e1] => Ok (e1)
+                           | _       => Err PrimitiveEncodingFailed
+                           end).
+
 Module Exports.
   Definition nat8CompilableType := nat8CompilableType.
   Definition Const_nat8_0xf0    := Const_nat8_0xf0.
@@ -128,8 +146,10 @@ Module Exports.
   Definition Const_nat8_zero    := Const_nat8_zero.
   Definition Const_nat8_eq      := Const_nat8_eq.
   Definition Const_nat8_and     := Const_nat8_and.
+  Definition Const_nat2int      := Const_nat2int.
   Definition Const_nat8_0x05    := Const_nat8_0x05.
   Definition Const_nat8_0x84    := Const_nat8_0x84.
   Definition Const_nat8_0x87    := Const_nat8_0x87.
+  Definition Const_nat8_0x85    := Const_nat8_0x85.
   Definition Const_nat8_0x95    := Const_nat8_0x95.
 End Exports.

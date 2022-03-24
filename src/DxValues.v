@@ -8,7 +8,7 @@ From compcert.lib Require Import Integers.
 From dx Require Import ResultMonad IR.
 From dx.Type Require Import Bool Nat.
 
-From bpf.comm Require Import Int16 rBPFValues.
+From bpf.comm Require Import rBPFValues.
 From bpf.src Require Import CoqIntegers DxIntegers InfComp.
 
 (** Coq2C: Values.val -> unsigned long long or unsigned int
@@ -35,7 +35,7 @@ Definition valptr8SymbolType :=
   MkCompilableSymbolType nil (Some valptr8CompilableType).
 
 Definition Const_valptr_null := constant valptr8SymbolType valptr_null C_U8ptr_zero.
-
+(*
 Definition valptr8ToboolSymbolType :=
   MkCompilableSymbolType [valptr8CompilableType] (Some boolCompilableType).
 
@@ -48,7 +48,7 @@ Definition Const_comp_eq_ptr8_zero :=
                 (fun es => match es with
                            | [e1] => Ok (C_U8ptr_eq e1 C_U8ptr_zero)
                            | _       => Err PrimitiveEncodingFailed
-                           end).
+                           end). *)
 
 (******************** Val2U32 *******************)
 
@@ -405,6 +405,20 @@ Definition Const_valS32TovalS64 :=
                            | _       => Err PrimitiveEncodingFailed
                            end).
 
+(** S64_to_U64: Val_ulongofslong
+  *)
+Definition Val_ulongofslong (i:val) := i.
+Definition valS64TovalU64SymbolType :=
+  MkCompilableSymbolType [valS64CompilableType] (Some val64CompilableType).
+
+Definition Const_valS64TovalU64 :=
+  MkPrimitive valS64TovalU64SymbolType
+                Val_ulongofslong
+                (fun es => match es with
+                           | [e1] => Ok (Csyntax.Ecast e1 C_U64)
+                           | _       => Err PrimitiveEncodingFailed
+                           end).
+
 (** Type signature: val -> val -> val
   *)
 Definition val64Toval64Toval64SymbolType :=
@@ -440,7 +454,7 @@ Definition Const_complu_set :=
                            end).
 
 (******************** Val Type Casting *******************)
-
+(*
 Definition sint16Toval64SymbolType :=
   MkCompilableSymbolType [sint16CompilableType] (Some val64CompilableType).
 
@@ -450,7 +464,7 @@ Definition Const_sint16_to_vlong :=
                 (fun es => match es with
                            | [e1] => Ok (Csyntax.Ecast e1 C_U64)
                            | _       => Err PrimitiveEncodingFailed
-                           end).
+                           end).*)
 
 Definition val64TovalU32SymbolType :=
   MkCompilableSymbolType [val64CompilableType] (Some valU32CompilableType).
@@ -524,8 +538,8 @@ Definition Const_valU32Toval64 :=
 
 Module Exports.
   Definition valptr8CompilableType := valptr8CompilableType.
-  Definition Const_valptr_null      := Const_valptr_null.
-  Definition Const_comp_eq_ptr8_zero:= Const_comp_eq_ptr8_zero.
+  Definition Const_valptr_null      := Const_valptr_null. (*
+  Definition Const_comp_eq_ptr8_zero:= Const_comp_eq_ptr8_zero. *)
 
   Definition valU32CompilableType   := valU32CompilableType.
   Definition Const_val32_zero       := Const_val32_zero.
@@ -587,8 +601,9 @@ Module Exports.
 
   Definition valS64CompilableType   := valS64CompilableType.
   Definition Const_valS32TovalS64   := Const_valS32TovalS64.
-
-  Definition Const_sint16_to_vlong  := Const_sint16_to_vlong.
+  Definition Const_valS64TovalU64   := Const_valS64TovalU64.
+(*
+  Definition Const_sint16_to_vlong  := Const_sint16_to_vlong.*)
   Definition Const_val64TovalU32    := Const_val64TovalU32.
   Definition Const_val64TovalS32    := Const_val64TovalS32.
   Definition Const_sint32_to_vint   := Const_sint32_to_vint.

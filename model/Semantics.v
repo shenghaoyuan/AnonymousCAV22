@@ -1,7 +1,7 @@
 From compcert Require Import Memory Memtype Integers Values Ctypes AST.
 From Coq Require Import ZArith Lia.
 
-From bpf.comm Require Import Flag Regs State Monad MemRegion rBPFAST rBPFMemType rBPFValues.
+From bpf.comm Require Import Flag rBPFValues Regs State Monad MemRegion rBPFAST rBPFMemType.
 From bpf.model Require Import Syntax Decode.
 
 Open Scope Z_scope.
@@ -23,7 +23,7 @@ Definition eval_src32 (s:reg+imm): M val :=
   | inr i => returnM (sint32_to_vint i) (**r the immediate is always int *)
   end.
 
-
+(*
 Definition _to_vlong (v: val): val :=
   match v with
   | Vlong n => Vlong n (**r Mint64 *)
@@ -40,7 +40,7 @@ Definition vlong_to_vint_or_vlong (chunk: memory_chunk) (v: val): val :=
     | _      => Vundef
     end
   | _       => Vundef
-  end.
+  end. *)
 
 Lemma intu_to_long_intu_eq:
   forall i j, i = Vint j -> val_intuoflongu (Val.longofintu i) = i.
@@ -103,7 +103,7 @@ Definition step_alu_binary_operation (a: arch) (bop: binOp) (d :reg) (s: reg+imm
     | BPF_XOR  => upd_reg d (Val.longofintu (Val.xor  d32 s32))
     | BPF_MOV  => upd_reg d (Val.longofintu s32)
     | BPF_ARSH => if compu_lt_32 s32 (Vint (Int.repr 32)) then
-                    upd_reg d (Val.longofintu (Val.shr  d32 s32))
+                    upd_reg d (Val.longofint (Val.shr  d32 s32))
                   else
                     upd_flag BPF_ILLEGAL_SHIFT (**r if 's' of 'shr d s' is 's > 32', then there is a acceptable error *)
     end
@@ -192,16 +192,11 @@ Definition step_branch_cond (c: cond) (d: reg) (s: reg+imm): M bool :=
     end
   end).
 
-Definition get_mem_region (n:nat) (mrs: MyMemRegionsType): M memory_region :=
-  returnM (MyMemRegionsIndexnat mrs n).
-
 Definition get_add (x y: val): M val := returnM (Val.add x y).
 
 Definition get_sub (x y: val): M val := returnM (Val.sub x y).
 
 Definition get_addr_ofs (x: val) (ofs: int): M val := returnM (val_intuoflongu (Val.addl x (Val.longofint (sint32_to_vint ofs)))).
-
-Definition get_block_ptr (mr: memory_region) : M val := returnM (block_ptr mr).
 
 Definition get_start_addr (mr: memory_region): M val := returnM (start_addr mr).
 
@@ -215,28 +210,24 @@ Definition is_well_chunk_bool (chunk: memory_chunk) : M bool :=
   | _ => returnM false
   end.
 
-Definition check_mem_aux2 (mr: memory_region) (perm: permission) (addr: val) (chunk: memory_chunk): M val :=
+Definition check_mem_aux2 (mr: memory_region) (perm: permission) (addr: val) (chunk: memory_chunk): M val := (*
   do well_chunk <- is_well_chunk_bool chunk;
-    if well_chunk then
-      do ptr    <- get_block_ptr mr; (**r Vptr b 0 *)
-      do start  <- get_start_addr mr;
-      do size   <- get_block_size mr;
-      do mr_perm  <- get_block_perm mr;
-      do lo_ofs <- get_sub addr start;
-      do hi_ofs <- get_add lo_ofs (memory_chunk_to_valu32 chunk);
-        if (andb (compu_le_32 Vzero lo_ofs) (compu_lt_32 hi_ofs size)) then
-          if (andb (compu_le_32 lo_ofs (memory_chunk_to_valu32_upbound chunk))
-                   (comp_eq_32 Vzero (val32_modu lo_ofs (memory_chunk_to_valu32 chunk)))) then
-              if (perm_ge mr_perm perm) then
-                returnM (Val.add ptr lo_ofs) (**r Vptr b lo_ofs *)
-              else
-                returnM Vnullptr
-          else
-            returnM Vnullptr (**r = 0 *)
-        else
-          returnM Vnullptr
+    if well_chunk then *)
+  do start  <- get_start_addr mr;
+  do size   <- get_block_size mr;
+  do mr_perm  <- get_block_perm mr;
+  do lo_ofs <- get_sub addr start;
+  do hi_ofs <- get_add lo_ofs (memory_chunk_to_valu32 chunk);
+    if andb (andb
+              (compu_lt_32 hi_ofs size)
+              (andb (compu_le_32 lo_ofs (memory_chunk_to_valu32_upbound chunk))
+                    (comp_eq_32 Vzero (val32_modu lo_ofs (memory_chunk_to_valu32 chunk)))))
+            (perm_ge mr_perm perm) then
+            returnM (Val.add (block_ptr mr) lo_ofs) (**r Vptr b lo_ofs *)
     else
-      returnM Vnullptr.
+      returnM Vnullptr. (*
+    else
+      returnM Vnullptr. *)
 
 Fixpoint check_mem_aux (num: nat) (perm: permission) (chunk: memory_chunk) (addr: val) (mrs: MyMemRegionsType) {struct num}: M val :=
   match num with
@@ -244,7 +235,8 @@ Fixpoint check_mem_aux (num: nat) (perm: permission) (chunk: memory_chunk) (addr
   | S n =>
     do cur_mr   <- get_mem_region n mrs;
     do check_mem <- check_mem_aux2 cur_mr perm addr chunk;
-      if comp_eq_ptr8_zero check_mem then
+    do is_null   <- cmp_ptr32_nullM check_mem;
+      if is_null then
         check_mem_aux n perm chunk addr mrs
       else
         returnM check_mem
@@ -256,7 +248,8 @@ Definition check_mem (perm: permission) (chunk: memory_chunk) (addr: val): M val
       do mem_reg_num <- eval_mrs_num;
       do mrs      <- eval_mrs_regions;
       do check_mem <- check_mem_aux mem_reg_num perm chunk addr mrs;
-        if comp_eq_ptr8_zero check_mem then
+      do is_null   <- cmp_ptr32_nullM check_mem;
+        if is_null then
           returnM Vnullptr
         else
           returnM check_mem
@@ -269,7 +262,8 @@ Definition step_load_x_operation (chunk: memory_chunk) (d:reg) (s:reg) (ofs:off)
   do sv   <- eval_reg s;
   do addr <- get_addr_ofs sv ofs;
   do ptr  <- check_mem Readable chunk addr;
-    if comp_eq_ptr8_zero ptr then
+  do is_null   <- cmp_ptr32_nullM ptr;
+    if is_null then
       upd_flag BPF_ILLEGAL_MEM
     else
       do v <- load_mem chunk ptr;
@@ -286,20 +280,27 @@ Definition step_store_operation (chunk: memory_chunk) (d: reg) (s: reg+imm) (ofs
     | inl r =>
       do src <- eval_reg r;
       do ptr  <- check_mem Writable chunk addr;
-        if comp_eq_ptr8_zero ptr then
+      do is_null   <- cmp_ptr32_nullM ptr;
+        if is_null then
           upd_flag BPF_ILLEGAL_MEM
         else
-          do _ <- store_mem_reg chunk ptr src; returnM tt
+          do _ <- store_mem_reg ptr chunk src; returnM tt
     | inr i =>
       do ptr  <- check_mem Writable chunk addr;
-        if comp_eq_ptr8_zero ptr then
+      do is_null   <- cmp_ptr32_nullM ptr;
+        if is_null then
           upd_flag BPF_ILLEGAL_MEM
         else
-          do _ <- store_mem_imm chunk ptr (sint32_to_vint i); returnM tt
+          do _ <- store_mem_imm ptr chunk (sint32_to_vint i); returnM tt
     end
 .
 
-Definition decodeM (i: int64) : M instruction := returnM (decode i).
+Definition decodeM (i: int64) : M instruction := fun st =>
+  match (decode i) with
+  | Some ins => Some (ins, st)
+  | None => None
+  end.
+
 Definition get_immediate (ins:int64):M int := returnM (get_immediate ins).
 
 Definition step : M unit :=
@@ -327,7 +328,7 @@ Definition step : M unit :=
         returnM tt
     | BPF_LDDW d i =>
       do len  <- eval_ins_len;
-        if (Int.lt (Int.add pc Int.one) len) then (**r pc+1 < len: pc+1 is less than the length of l *)
+        if (Int.ltu (Int.add pc Int.one) len) then (**r pc+1 < len: pc+1 is less than the length of l *)
           do next_ins <- eval_ins (Int.add pc Int.one);
           do next_imm <- get_immediate next_ins;
           do _ <- upd_reg d (Val.orl (Val.longofint (sint32_to_vint i)) (Val.shll  (Val.longofint (sint32_to_vint next_imm)) (sint32_to_vint (Int.repr 32))));
@@ -340,8 +341,16 @@ Definition step : M unit :=
     | BPF_ST chunk d s ofs =>
       step_store_operation chunk d s ofs
 
-    | BPF_RET => upd_flag BPF_SUCC_RETURN
-    | BPF_ERR => upd_flag BPF_ILLEGAL_INSTRUCTION
+    | BPF_CALL i => (**r TODO: is this type-casting correct? this style is because of DxInstructions... *)
+      do f_ptr    <- _bpf_get_call (Vint ((Int.repr (Int64.unsigned (Int64.repr (Int.signed i))))));
+      do is_null  <- cmp_ptr32_nullM f_ptr;
+        if is_null then
+          upd_flag BPF_ILLEGAL_CALL
+        else
+          do res  <- exec_function f_ptr;
+            upd_reg R0 (Val.longofintu res)
+    | BPF_RET    => upd_flag BPF_SUCC_RETURN
+    | BPF_ERR    => upd_flag BPF_ILLEGAL_INSTRUCTION
     end.
 
 Fixpoint bpf_interpreter_aux (fuel: nat) {struct fuel}: M unit :=
@@ -350,12 +359,17 @@ Fixpoint bpf_interpreter_aux (fuel: nat) {struct fuel}: M unit :=
   | S fuel0 =>
     do len  <- eval_ins_len;
     do pc <- eval_pc;
-      if(andb (Int_le Int.zero pc) (Int.lt pc len)) then (**r 0 < pc < len: pc is less than the length of l *)
+      if (Int.ltu pc len) then (**r pc < len: pc is less than the length of l *)
         do _ <- step;
         do f <- eval_flag;
           if flag_eq f BPF_OK then
-            do _ <- upd_pc_incr;
-              bpf_interpreter_aux fuel0
+            do len0 <- eval_ins_len;
+            do pc0 <- eval_pc; (**r step may modify pc: lddw *)
+              if (Int.ltu (Int.add pc0 Int.one) len0) then (**r pc + 1 < len *)
+                do _ <- upd_pc_incr;
+                  bpf_interpreter_aux fuel0
+              else
+                upd_flag BPF_ILLEGAL_LEN
           else
             returnM tt
       else
@@ -365,11 +379,13 @@ Fixpoint bpf_interpreter_aux (fuel: nat) {struct fuel}: M unit :=
 Definition bpf_interpreter (fuel: nat): M val :=
   do mrs      <- eval_mem_regions;
   do bpf_ctx  <- get_mem_region 0 mrs;
-  do _        <- upd_reg R1 (start_addr bpf_ctx); (**r let's say the ctx memory region is also be the first one *)
+  do start  <- get_start_addr bpf_ctx;
+  do _        <- upd_reg R1 (Val.longofintu start); (**r let's say the ctx memory region is also be the first one *)
   do _        <- bpf_interpreter_aux fuel;
   do f        <- eval_flag;
     if flag_eq f BPF_SUCC_RETURN then
-      eval_reg R0
+      do res  <- eval_reg R0;
+        returnM res
     else
       returnM val64_zero.
 

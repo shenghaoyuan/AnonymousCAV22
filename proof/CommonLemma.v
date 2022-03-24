@@ -1,11 +1,63 @@
-From compcert Require Import Coqlib Clight Integers Values Ctypes Memory.
+From compcert Require Import Coqlib Clight Integers Values Ctypes Memory AST.
 From bpf.comm Require Import Regs State.
 From bpf.proof Require Import Clightlogic CommonLib.
-(* From Ltac2 Require Import Ltac2 Message. *)
 From Coq Require Import List Lia ZArith.
 Import ListNotations.
 
 Open Scope Z_scope.
+
+Ltac build_app_aux T :=
+  match T with
+  | ?F ?X => let ty := type of X in
+             let r := build_app_aux F in
+             constr:((mk ty X) :: r)
+  | ?X    => constr:(@nil dpair)
+  end.
+
+Ltac get_function T :=
+  match T with
+  | ?F ?X => get_function F
+  | ?X    => X
+  end.
+
+Ltac build_app T :=
+  let a := build_app_aux T in
+  let v := (eval simpl in (DList.of_list_dp (List.rev a))) in
+  let f := get_function T in
+  match type of v with
+  | @DList.t _ _ ?L =>
+      change T with (Clightlogic.app (f: @arrow_type L _) v)
+  end.
+
+Ltac change_app_for_body :=
+  match goal with
+  | |- @correct_body _ _ ?F _ _ _ _ _ _ _ _ _
+    => build_app F
+  end.
+
+
+Ltac change_app_for_statement :=
+  match goal with
+  | |- correct_statement _ _ ?F _ _ _ _ _ _ _ _  => build_app F
+  end.
+
+Ltac prove_incl :=
+  simpl; unfold incl; simpl; intuition congruence.
+
+Ltac prove_in_inv :=
+  simpl; intuition subst; discriminate.
+
+Ltac Hdisj_false :=
+  let H := fresh "H" in
+  let K := fresh "K" in
+    match goal with
+    | |- ~(?X \/ ?Y) =>
+      intro H; Hdisj_false
+    | H0: ?X \/ ?Y |- False =>
+      destruct H0 as [K | H0]; [ inversion K | Hdisj_false]
+    | H1: False |- False =>
+      assumption
+    end.
 
 Ltac correct_Forall :=
 match goal with
@@ -55,29 +107,46 @@ Ltac get_inv_from_list VAR L :=
       end
   end.
 
+Ltac IN T :=
+  lazymatch T with
+  | In ?X nil => fail -1 "Fail to get a membership proof"
+  | In ?X (cons ?X ?L') => constr:(@in_eq _ X L')
+  | In ?X (cons ?Y ?L') =>
+      let inr := constr:(In X L') in
+      let prf := IN inr in
+      constr:(@in_cons _ Y X _ prf)
+  |  ?T        => fail -1 "list is not of the form  a1::....::an:nil" T
+  end.
+
 Ltac get_invariant VAR :=
   let E := fresh "ME" in
   let I := fresh "I" in
   let v := fresh "v" in
   let p := fresh "p" in
   let c := fresh "c" in
-  match goal with
-  | H : match_temp_env ?L ?LE ?ST ?M |- _ =>
-      let tp := get_inv_from_list VAR L in
-      match tp with
-      | (?T,?P) =>
-          assert (I : exists v, Maps.PTree.get VAR LE = Some v /\
-                              P v ST M /\ Cop.val_casted v T);
-          [
-            unfold match_temp_env in H;
-            rewrite Forall_forall in H;
-            assert (E : match_elt ST M LE (VAR,T,P)) by (apply H ; simpl; tauto);
-            unfold match_elt,fst in E;
-            destruct (Maps.PTree.get VAR LE);[|tauto];
-            eexists ; split ; auto
-          | destruct I as (v &p &c)]
-      end
+  let vc := fresh "vc" in
+  let v1 := fresh "v1" in
+  lazymatch goal with
+  | H:match_temp_env ?L ?LE ?ST ?M
+    |- _ =>
+        let tp := get_inv_from_list VAR L in
+        match tp with
+        | (?T, ?P) =>
+            assert (I : exists v, Maps.PTree.get VAR LE = Some v /\ eval_inv P v ST M /\ Cop.val_casted v T);
+             [ unfold match_temp_env in H; rewrite Forall_forall in H;
+               assert (E : match_elt ST M LE (VAR, T, P));
+                [ (apply H; unfold AST.ident;
+                   match goal with
+                         |- ?G => let prf := IN G in exact prf
+                   end)  |
+               unfold match_elt, fst,snd in E; destruct (Maps.PTree.get VAR LE) as [v1|]
+               ; [
+                 exists v1 ; split ;[reflexivity | exact E]
+               | (exfalso ; assumption) ]]
+             | destruct I as (v, (p, (c, vc))) ]
+        end
   end.
+
 
 Ltac correct_body :=
   intros st le m;
@@ -87,12 +156,18 @@ Ltac correct_body :=
   end;
   car_cdr ;*)  unfold list_rel_arg,app;
   match goal with
-    |- correct_body _ _ _ _ ?B _ ?INV
+    |- correct_body _ _ _ _ ?B _ _ ?INV
                  _ _ _ _ =>
       let I := fresh "INV" in
       set (I := INV) ; simpl in I;
       let B1 := eval simpl in B in
         change B with B1
+  end.
+
+Ltac normalise_post_unit :=
+  match goal with
+  | |- context[post_unit _ _ _ ?L] =>
+      change L with (inv_of_modifies ModSomething L)
   end.
 
 
@@ -102,18 +177,6 @@ Ltac exec_seq_of_labeled_statement :=
       let x := (eval simpl in (seq_of_labeled_statement X)) in
       change (seq_of_labeled_statement X) with x; try simpl
   end.
-
-(**copy from cpdt *)
-Ltac completer :=
-  repeat match goal with
-           | [ |- _ /\ _ ] => constructor
-           | [ H : _ /\ _ |- _ ] => destruct H
-           | [ H : ?P -> ?Q, H' : ?P |- _ ] => specialize (H H')
-           | [ |- forall x, _ ] => intro
-           | [ H: exists v, ?P |- _ ] => destruct H
-
-           | [ H : forall x, ?P x -> _, H' : ?P ?X |- _ ] => specialize (H X H')
-         end.
 
 Ltac deref_loc_tactic :=
   match goal with
@@ -183,7 +246,7 @@ Ltac forward_expr :=
     repeat (econstructor; eauto; try deref_loc_tactic); try reflexivity
   end.
 
-Ltac forward_clight_ss :=
+Ltac forward_smallstep :=
   (* repeat *)
   match goal with
   (** forward_return_some *)
@@ -301,9 +364,26 @@ Ltac forward_clight :=
       ]
   end.
 
+Lemma Int_eq_one_zero :
+  Int.eq Int.one Int.zero = false.
+Proof.
+  reflexivity.
+Qed.
 
-Ltac forward_star :=
-  unfold step2;
+Ltac simpl_if_one_zero :=
+  match goal with
+  | |- context[if negb (Int.eq Int.one Int.zero) then _ else _ ] =>
+    rewrite Int_eq_one_zero; unfold negb
+  | |- context[if Int.eq Int.one Int.zero then _ else _ ] =>
+    rewrite Int_eq_one_zero
+  | |- context[if negb (Int.eq Int.zero Int.zero) then _ else _ ] =>
+    rewrite Int.eq_true; unfold negb
+  | |- context[(if Int.eq Int.zero Int.zero then _ else _)] =>
+    rewrite Int.eq_true
+  end.
+
+Ltac forward_star' :=
+  (*unfold step2; *)
   match goal with
   (** Inductive star (ge: genv): state -> trace -> state -> Prop :=
   | star_refl: forall s,
@@ -319,188 +399,33 @@ Ltac forward_star :=
         | _ => eapply Smallstep.star_step; eauto
         end
       | _ => eapply Smallstep.star_step; eauto
-      end (*
-  | |- Smallstep.star _  _ ?s _ ?s =>
-    eapply Smallstep.star_refl
-  | |- Smallstep.star _  _ (Returnstate _ _ _) _ (Returnstate _ _ _) =>
-    (eapply Smallstep.star_refl || fail "debug `eapply Smallstep.star_refl`")
-  (** 
-  | star_step: forall s1 t1 s2 t2 s3 t,
-      step ge s1 t1 s2 -> star ge s2 t2 s3 -> t = t1 ** t2 ->
-      star ge s1 t s3. *)
-  | |- Smallstep.star _ _ _ _ _ =>
-    eapply Smallstep.star_step; eauto *)
+      end
+  | |- Events.E0 = Events.Eapp _ _ =>
+      try reflexivity
+  end.
+
+Ltac forward_step' :=
+  (*unfold step2; *)
+  match goal with
   | |- Smallstep.step _ _ _ _ _ =>
-      forward_clight_ss
+      forward_smallstep
   | |- step _ _ _ _ _ =>
       forward_clight
   | |- Events.E0 = Events.Eapp _ _ =>
       try reflexivity
   end.
 
-Ltac forward_plus :=
- match goal with
-  (** forward_seq *)
-  | |- Smallstep.plus _ _ (State _ (Ssequence _ _) _ _ _ _) _ _ =>
-      eapply Smallstep.plus_left'; eauto; [eapply step_seq | try simpl ..]
-  (** forward_call_one_arg *)
-  | |- Smallstep.plus _ _ (State _ (Scall _ _ _) _ _ _ _) _ _ =>
-      eapply Smallstep.plus_left'; eauto;
-      [eapply step_call;
-        [reflexivity |                                (** goal: classify_fun *)
-         eapply eval_Elvalue;                         (** goal: eval_expr *)
-          [eapply eval_Evar_global; reflexivity |     (** eval_lvalue *)
-           eapply deref_loc_reference; reflexivity] | (** goal: deref_loc *)
-         eapply eval_Econs;                           (** goal: eval_exprlist *)
-          [eapply eval_Etempvar; reflexivity |        (** goal: eval_expr *)
-           reflexivity |                              (** goal: Cop.sem_cast *)
-           eapply eval_Enil] |                        (** goal: eval_exprlist *)
-         econstructor; eauto |                        (** goal: Globalenvs.Genv.find_funct *)
-         reflexivity] |                               (** goal: type_of_fundef *)
-       try simpl ..]
-  (** forward_returnstate *)
-  | |- Smallstep.plus _ _ (Returnstate _ _ _) _ _ =>
-      eapply Smallstep.plus_left'; eauto; [eapply step_returnstate | try simpl ..]
-  (** forward_skip_seq *)
-  | |- Smallstep.plus _ _ (State _ Sskip _ _ _ _) _ _ =>
-      eapply Smallstep.plus_left'; eauto; [eapply step_skip_seq | try simpl ..]
-  (** forward_if *)
-  | |- Smallstep.plus _ _ (State _ (Sifthenelse _ _ _) _ _ _ _) _ _ =>
-    eapply Smallstep.plus_left'; eauto;
-    [eapply step_ifthenelse;
-      [eapply eval_Etempvar; rewrite Maps.PTree.gss; reflexivity |
-       reflexivity] |
-     try simpl ..]
-  (** forward_return_some *)
-  | |- Smallstep.plus _ _ (State _ (Sreturn (Some _)) _ _ _ _) _ _ =>
-    eapply Smallstep.plus_one; eauto;
-      [eapply step_return_1 | try simpl ..] (*
-    eapply Smallstep.plus_left'; eauto;
-      [eapply step_return_1;
-        [eapply eval_Econst_long |
-         reflexivity |
-         reflexivity] | try simpl ..]*)
-  (** forward_return_none *)
-  | |- Smallstep.plus _ _ (State _ (Sreturn None) _ _ _ _) _ _ =>
-      eapply Smallstep.plus_one; eauto; eapply step_return_0; try reflexivity
- end.
-
-Ltac prepare :=
+Ltac post_process :=
   match goal with
-  | |- correct_function3 _ ?args _ _ _ _ _ _ _ =>
-    eapply correct_function_from_body;
-    [ simpl; unfold Coqlib.list_disjoint; simpl; intuition (subst; discriminate) |
-      eapply list_no_repet_dec with (eq_dec := Pos.eq_dec); reflexivity |
-      simpl; eapply list_no_repet_dec with (eq_dec := Pos.eq_dec); reflexivity |
-      reflexivity |
-      reflexivity |
-      idtac
-    ];
-    intros;
-    unfold args in *;
-    car_cdr;
-    unfold list_rel_arg;
-    simpl;
-    unfold correct_body;
-    repeat intro
-  end.
-
-(**
-match_temp_env
-      [(_x, Clightdefs.tulong, stateless val64_correct c);
-      (_y, Clightdefs.tulong, stateless val64_correct c0)] le st
-      m
-*)
-
-Ltac get_invariant_more VAR :=
-  let E := fresh "ME" in
-  let I := fresh "I" in
-  let v := fresh "v" in
-  let p := fresh "p" in
-  let c := fresh "c" in
-  match goal with
-  | H : match_temp_env ?L ?LE ?ST ?M |- _ =>
-      let tp := get_inv_from_list VAR L in
-      match tp with
-      | (?T,?P) =>
-          assert (I : exists v, Maps.PTree.get VAR LE = Some v /\
-                              P v ST M /\ Cop.val_casted v T);
-          [
-            unfold match_temp_env in H;
-            rewrite Forall_forall in H;
-            assert (E : match_elt ST M LE (VAR,T,P)) by (apply H ; simpl; tauto);
-            unfold match_elt,fst in E;
-            destruct (Maps.PTree.get VAR LE);[|tauto];
-            eexists ; split ; auto
-          | destruct I as (v &p &c)]; completer
-      end
-  end.
+  | |- Maps.PTree.get ?X (Maps.PTree.set ?X _ _) = Some _ =>
+      rewrite Maps.PTree.gss
+  | H: Maps.PTree.get ?X _ = Some _ |- Maps.PTree.get ?X (Maps.PTree.set ?Y _ _) = Some _ =>
+    let Heq := fresh "Heq" in
+      rewrite Maps.PTree.gso; try (apply H); try (unfold X, Y; intro Heq; inversion Heq)
+  end; try simpl_if_one_zero.
 
 
-(*
-Ltac build_app_aux T :=
-  match T with
-  | ?F ?X => let ty := type of X in
-             let r := build_app_aux F in
-             constr:((mk ty X) :: r)
-  | ?X    => constr:(@nil dpair)
-  end.                                    
-
-Ltac get_function T :=
-  match T with
-  | ?F ?X => get_function F
-  | ?X    => X
-  end.
-
-Ltac build_app T :=
-  let a := build_app_aux T in
-  let v := (eval simpl in (DList.of_list_dp (List.rev a))) in
-  let f := get_function T in
-  match type of v with
-  | DList.t _ ?L =>
-      change T with (app (f: arrow_type L _) v)
-  end.
-
-Ltac change_app_for_body :=
-  match goal with
-  | |- @correct_body _ _ ?F _ _ _ _ _ _ _ _
-    => build_app F
-  end.
-
-Ltac change_app_for_statement :=
-  match goal with
-  | |- @correct_statement _ _ ?F _ _ _ _ _ _ _ _
-    => build_app F
-  end.
-
-Ltac prove_incl :=
-  simpl; unfold incl; simpl; intuition congruence.
-
-Ltac prove_in_inv :=
-  simpl; intuition subst; discriminate.
-
-Ltac correct_forward :=
-  match goal with
-  | |- @correct_body _ _ (bindM ?F1 ?F2)  _
-                     (Ssequence
-                        (Ssequence
-                           (Scall _ _ _)
-                           (Sset ?V ?T))
-                        ?R)
-                     _ _ _ _ _ _  =>
-      eapply correct_statement_seq_body_pure;
-      [ change_app_for_statement ;
-        let b := match T with
-                 | Ecast _ _ => constr:(true)
-                 | _         => constr:(false)
-                 end in
-        eapply correct_statement_call with (has_cast := b)
-      |]
-  | |- @correct_body _ _ (match  ?x with true => _ | false => _ end) _
-                     (Sifthenelse _ _ _)
-                     _ _ _ _ _ _  =>
-      eapply correct_statement_if_body; [prove_in_inv | destruct x ]
-  end. *)
+Ltac forward_star := try simpl_if_one_zero; try forward_star'; repeat forward_step'; try post_process; try reflexivity.
 
 (** Integer.max_unsigned *)
 
@@ -509,12 +434,6 @@ Lemma Int_max_unsigned_eq64:
 Proof.
   Transparent Archi.ptr64.
   unfold Int.max_unsigned, Int.modulus, Int.wordsize, Wordsize_32.wordsize.
-  reflexivity.
-Qed.
-
-Lemma Int_eq_one_zero :
-  Int.eq Int.one Int.zero = false.
-Proof.
   reflexivity.
 Qed.
 
@@ -568,70 +487,6 @@ Proof.
   rewrite Int.unsigned_repr; [reflexivity | rewrite Int_max_unsigned_eq64; lia].
 Qed.
 
-(*
-Lemma Ptrofs_unsigned_repr_4:
-  Ptrofs.unsigned (Ptrofs.repr 4) = 4.
-Proof.
-  apply Ptrofs.unsigned_repr.
-  rewrite Ptrofs_max_unsigned_eq32.
-  lia.
-Qed.
-
-Lemma Ptrofs_unsigned_repr_8:
-  Ptrofs.unsigned (Ptrofs.repr 8) = 8.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_12:
- Ptrofs.unsigned (Ptrofs.repr 12) = 12.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_16:
- Ptrofs.unsigned (Ptrofs.repr 16) = 16.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_96:
-  Ptrofs.unsigned (Ptrofs.repr 96) = 96.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_100:
- Ptrofs.unsigned (Ptrofs.repr 100) = 100.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_104:
- Ptrofs.unsigned (Ptrofs.repr 104) = 104.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_108:
- Ptrofs.unsigned (Ptrofs.repr 108) = 108.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_112:
- Ptrofs.unsigned (Ptrofs.repr 112) = 112.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-
-Lemma Ptrofs_unsigned_repr_116:
- Ptrofs.unsigned (Ptrofs.repr 116) = 116.
-Proof.
-  rewrite Ptrofs.unsigned_repr; [reflexivity | rewrite Ptrofs_max_unsigned_eq32; lia].
-Qed.
-*)
-
 Lemma Ptrofs_unsigned_repr_id_of_reg:
   forall r,
   Ptrofs.unsigned (Ptrofs.repr (8 * id_of_reg r)) = 8 * id_of_reg r.
@@ -680,29 +535,198 @@ Proof.
   reflexivity.
 Qed.
 
-Lemma upd_reg_preserves_perm: forall r vl vl' chunk st m1 m m2 b b' ofs ofs' k p
-  (Hstate_inject: Mem.inject inject_id (bpf_m st) m) (**r (inject_bl_state b') *)
-  (Hstore: Mem.store chunk m b' ofs' vl' = Some m2)
-  (Hrbpf_m: bpf_m (upd_reg r vl st) = m1)
-  (Hrbpf_perm: Mem.perm m1 b ofs k p),
-    Mem.perm m2 b ofs k p.
+Lemma nth_error_some_length:
+  forall A n l (m:A), nth_error l n = Some m -> (0 <= n < List.length l)%nat.
 Proof.
-    unfold upd_reg; simpl; intros; subst.
-    apply Mem.perm_inject with (f:= inject_id) (m2:=m) (b2:= b) (delta:=0%Z)in Hrbpf_perm.
-    rewrite Z.add_0_r in Hrbpf_perm.
-    apply (Mem.perm_store_1 _ _ _ _ _ _ Hstore _ _ _ _ Hrbpf_perm).
-    (*
-    unfold inject_bl_state in *.
-    destruct (Pos.eqb b b') eqn: Hblk_eq.
-    - (**r b = b' *)
-      (**r Search (Pos.eqb).*)
-      apply Peqb_true_eq in Hblk_eq.
-      subst b'; simpl in *.
-      destruct Hstate_inject.
-      destruct mi_inj.
-      rewrite Hblk_eq in Hstate_inject. *)
-    reflexivity.
-    assumption.
+  intros.
+  rewrite <- nth_error_Some.
+  split; intros.
+  - lia.
+  - destruct n.
+    + simpl in *.
+      destruct l.
+      inversion H.
+      intro.
+      inversion H0.
+    + simpl in *.
+      destruct l.
+      inversion H.
+      rewrite H.
+      intro H0; inversion H0.
 Qed.
+
+(*
+Section Test.
+  Variable A: Type.
+  Parameter testP: nat -> A -> Prop.
+  Fixpoint list_dualP (ofs: nat) (l:list A) :=
+  match l with
+  | nil => True
+  | hd :: l' => testP (16 * ofs) hd /\ list_dualP (ofs+1) l'
+  end.
+  Lemma list_dual_in :
+    forall l mr ofs
+    (Hin : In mr l)
+    (Hlist : list_dualP ofs l),
+      exists n, testP (16 * n) mr.
+  Proof.
+    induction l; intros.
+    - simpl in Hin. inversion Hin.
+    - simpl in Hin. destruct Hlist as (Hlist0 & Hlist1).
+      destruct Hin.
+      + subst. exists ofs; assumption.
+      + apply IHl with (ofs:= (ofs+1)%nat). assumption.
+        assumption.
+  Qed.
+  Variable default_A: A.
+  Definition list_dualP' (ofs: nat) (l:list A) :=
+    forall n, (0 <= n < List.length l)%nat -> testP (16 * ofs) (nth n l default_A).
+  Lemma list_dual_in' :
+    forall l mr ofs
+    (Hin : In mr l)
+    (Hlist : list_dualP' ofs l),
+      exists n, testP (16 * n) mr.
+  Proof.
+    intros.
+    apply In_nth_error in Hin.
+    destruct Hin as (n & Hin).
+    apply nth_error_some_length in Hin as Hlen.
+    unfold list_dualP' in Hlist.
+    specialize (Hlist n Hlen).
+    destruct Hlen as ( _ & Hlen).
+    apply nth_error_nth' with (d:= default_A) in Hlen.
+    rewrite Hlen in Hin.
+    inversion Hin.
+    subst.
+    exists ofs; assumption.
+  Qed.
+End Test. *)
+
+Lemma valid_access_chunk_implies:
+  forall m chunk b ofs p,
+    Mem.valid_access m chunk b ofs p -> Mem.valid_access m Mint8unsigned b ofs p.
+Proof.
+  intros.
+  destruct chunk.
+  all: unfold Mem.valid_access in *;
+    destruct H as (Hrange & Halign);
+    split; [unfold size_chunk, Mem.range_perm in *; intros; apply Hrange; lia | unfold align_chunk; apply Z.divide_1_l].
+Qed.
+
+Lemma Hint_unsigned_int64:
+    forall i, (Int64.unsigned (Int64.repr (Int.unsigned i))) = (Int.unsigned i).
+Proof.
+    intro.
+    rewrite Int64.unsigned_repr; [reflexivity |].
+    assert (Hrange: 0 <= Int.unsigned i <= Int.max_unsigned). { apply Int.unsigned_range_2. }
+    change Int.max_unsigned with 4294967295 in Hrange.
+    change Int64.max_unsigned with 18446744073709551615.
+    lia.
+Qed.
+
+Lemma Hzeq_neq_intro:
+    forall (A:Type) a n (b c: A),
+      (a <> n)%nat -> (if Coqlib.zeq (Z.of_nat n) (Z.of_nat a) then b else c) = c.
+Proof.
+  intros.
+  apply zeq_false.
+  intro.
+  apply Nat2Z.inj in H0.
+  lia.
+Qed.
+
+Lemma Int_repr_eq:
+  forall a b
+    (Ha_range: 0 <= a <= Int.max_unsigned)
+    (Hb_range: 0 <= b <= Int.max_unsigned)
+    (Heq: Int.repr a = Int.repr b),
+      a = b.
+Proof.
+  intros.
+  Transparent Int.repr.
+  unfold Int.repr in Heq.
+  inversion Heq.
+  do 2 rewrite Int.Z_mod_modulus_eq in H0.
+  change Int.modulus with 4294967296 in H0.
+  change Int.max_unsigned with 4294967295 in *.
+  rewrite Z.mod_small in H0; [ | lia].
+  rewrite Z.mod_small in H0; [ | lia].
+  assumption.
+Qed.
+
+Lemma Clt_Zlt_signed:
+  forall ofs hi,
+    Int.lt ofs hi = true ->
+      Int.signed ofs < Int.signed hi.
+Proof.
+  intros.
+  unfold Int.lt in H.
+  destruct (Coqlib.zlt _ _) in H; try inversion H.
+  assumption.
+Qed.
+
+Lemma Cle_Zle_signed:
+  forall lo ofs,
+    negb (Int.lt ofs lo) = true ->
+      Int.signed lo <= Int.signed ofs.
+Proof.
+  intros.
+  rewrite negb_true_iff in H.
+  unfold Int.lt in H.
+  destruct (Coqlib.zlt _ _) in H; try inversion H.
+  lia.
+Qed.
+
+Lemma Clt_Zlt_unsigned:
+  forall ofs hi,
+    Int.ltu ofs hi = true ->
+      Int.unsigned ofs < Int.unsigned hi.
+Proof.
+  intros.
+  unfold Int.ltu in H.
+  destruct (Coqlib.zlt _ _) in H; try inversion H.
+  assumption.
+Qed.
+
+Lemma Cle_Zle_unsigned:
+  forall lo ofs,
+    negb (Int.ltu ofs lo) = true ->
+      Int.unsigned lo <= Int.unsigned ofs.
+Proof.
+  intros.
+  rewrite negb_true_iff in H.
+  unfold Int.ltu in H.
+  destruct (Coqlib.zlt _ _) in H; try inversion H.
+  lia.
+Qed.
+
+
+Ltac context_destruct_if_inversion :=
+  let Heq := fresh "Hcond" in
+    match goal with
+    | H: (if ?X then _ else _) = _ |- _ =>
+      destruct X eqn: Hcond; inversion H
+    end.
+
+(*
+Lemma Zeq_dec_eqb_intro:
+  forall a b,
+    (if Z.eq_dec a b then true else false) = true -> Z.eqb a b = true.
+Proof.
+  intros.
+  Print Z.eq_dec.
+Qed.
+
+Lemma Hzeq_neq_elim:
+    forall (A:Type) a n (b c: A),
+      (if Coqlib.zeq (Z.of_nat n) (Z.of_nat a) then b else c) = c -> (a <> n)%nat.
+Proof.
+  intros.
+  unfold zeq in H.
+  Locate Z.eq_dec.
+Qed. *)
+
+
+#[global] Notation dcons := (DList.DCons (F:= fun x => x -> Inv)).
 
 Close Scope Z_scope.

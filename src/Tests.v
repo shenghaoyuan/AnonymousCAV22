@@ -10,7 +10,7 @@ From compcert.lib Require Import Integers.
 From dx Require Import ResultMonad IR CoqIR IRtoC DXModule DumpAsC.
 From dx.Type Require Bool Nat.
 
-From bpf.comm Require Import Int16 MemRegion rBPFValues rBPFAST rBPFMemType Flag Regs.
+From bpf.comm Require Import MemRegion rBPFValues rBPFAST rBPFMemType Flag Regs.
 From bpf.src Require Import DxIntegers DxList64 DxValues DxRegs DxState DxOpcode DxFlag DxInstructions DxAST DxMemRegion DxMemType DxMonad DxNat.
 
 (***************************************)
@@ -45,14 +45,19 @@ GenerateIntermediateRepresentation SymbolIRs
   store_mem_reg
   eval_ins_len
   eval_ins
-  __
-  get_mem_region
+  cmp_ptr32_nullM
   get_dst
-  reg64_to_reg32
   get_src
+  get_mem_region
+  _bpf_get_call
+  exec_function
+  __
+  reg64_to_reg32
   get_offset
   get_immediate
   eval_immediate
+  get_src64
+  get_src32
   get_opcode_ins
   get_opcode_alu64
   get_opcode_alu32
@@ -64,8 +69,8 @@ GenerateIntermediateRepresentation SymbolIRs
   get_opcode
   get_add
   get_sub
-  get_addr_ofs
-  get_block_ptr (**r adding the four functions *)
+  get_addr_ofs (*
+  get_block_ptr (**r adding the four functions *)*)
   get_start_addr
   get_block_size
   get_block_perm
@@ -73,7 +78,6 @@ GenerateIntermediateRepresentation SymbolIRs
   check_mem_aux2
   check_mem_aux
   check_mem
-  comp_and_0x08_byte
   step_opcode_alu64
   step_opcode_alu32
   step_opcode_branch
