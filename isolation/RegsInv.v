@@ -1,3 +1,21 @@
+(**************************************************************************)
+(*  This file is part of CertrBPF,                                        *)
+(*  a formally verified rBPF verifier + interpreter + JIT in Coq.         *)
+(*                                                                        *)
+(*  Copyright (C) 2022 Inria                                              *)
+(*                                                                        *)
+(*  This program is free software; you can redistribute it and/or modify  *)
+(*  it under the terms of the GNU General Public License as published by  *)
+(*  the Free Software Foundation; either version 2 of the License, or     *)
+(*  (at your option) any later version.                                   *)
+(*                                                                        *)
+(*  This program is distributed in the hope that it will be useful,       *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *)
+(*  GNU General Public License for more details.                          *)
+(*                                                                        *)
+(**************************************************************************)
+
 From bpf.comm Require Import Regs State.
 From compcert Require Import Values.
 
@@ -118,33 +136,10 @@ Proof.
   simpl; assumption.
 Qed.
 
-Lemma reg_inv_eval_src:
-  forall st r,
-    register_inv st ->
-      exists vl,
-        eval_reg r st = Vlong vl.
-Proof.
-  unfold register_inv, eval_reg, eval_regmap.
-  intros.
-  rewrite <- is_vlong_iff.
-  destruct r; intuition.
-Qed.
-(*
-Lemma reg_inv_store_aux:
-  forall st1 st2 chunk addr src
-    (Hstore: store_mem_reg chunk addr src st1 = Some st2),
-      regs_st st1 = regs_st st2.
-Proof.
-  unfold store_mem_reg, vlong_to_vint_or_vlong, upd_mem, upd_flag; intros.
-  destruct chunk; inversion Hstore.
-  all: intuition.
-  all: destruct Memory.Mem.storev; inversion H0; intuition.
-Qed. *)
-
 Lemma reg_inv_store_reg:
   forall st1 st2 chunk addr src
     (Hreg : register_inv st1)
-    (Hstore: store_mem_reg chunk addr (Vlong src) st1 = Some st2),
+    (Hstore: store_mem_reg addr chunk (Vlong src) st1 = Some st2),
       register_inv st2.
 Proof.
   unfold store_mem_reg, upd_mem, upd_flag, register_inv;
@@ -156,7 +151,7 @@ Qed.
 Lemma reg_inv_store_imm:
   forall st1 st2 chunk addr src
     (Hreg : register_inv st1)
-    (Hstore: store_mem_imm chunk addr (Vint src) st1 = Some st2),
+    (Hstore: store_mem_imm addr chunk (Vint src) st1 = Some st2),
       register_inv st2.
 Proof.
   unfold store_mem_imm, upd_mem, upd_flag, register_inv;

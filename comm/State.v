@@ -1,3 +1,21 @@
+(**************************************************************************)
+(*  This file is part of CertrBPF,                                        *)
+(*  a formally verified rBPF verifier + interpreter + JIT in Coq.         *)
+(*                                                                        *)
+(*  Copyright (C) 2022 Inria                                              *)
+(*                                                                        *)
+(*  This program is free software; you can redistribute it and/or modify  *)
+(*  it under the terms of the GNU General Public License as published by  *)
+(*  the Free Software Foundation; either version 2 of the License, or     *)
+(*  (at your option) any later version.                                   *)
+(*                                                                        *)
+(*  This program is distributed in the hope that it will be useful,       *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *)
+(*  GNU General Public License for more details.                          *)
+(*                                                                        *)
+(**************************************************************************)
+
 From compcert.cfrontend Require Csyntax Ctypes Cop.
 From compcert.common Require Import Values Memory AST.
 From compcert.lib Require Import Integers.
@@ -100,18 +118,35 @@ Definition upd_mem (m: Mem.mem) (st: state): state := {| (**r never be used I gu
   bpf_m   := m;
 |}.
 
-Definition _to_vlong (v: val): val :=
+Definition is_well_chunkb (chunk: memory_chunk) : bool :=
+  match chunk with
+  | Mint8unsigned | Mint16unsigned | Mint32 | Mint64 => true
+  | _ => false
+  end.
+
+Definition is_vint_or_vlong_chunk (chunk: memory_chunk) (v: val): bool :=
+  match chunk, v with
+  | Mint8unsigned, Vint _
+  | Mint16unsigned, Vint _
+  | Mint32, Vint _
+  | Mint64, Vlong _  => true
+  | _, _ => false
+  end.
+
+Definition _to_vlong (v: val): option val :=
   match v with
-  | Vlong n => Vlong n (**r Mint64 *)
-  | Vint  n => Vlong (Int64.repr (Int.unsigned n)) (**r Mint8unsigned, Mint16unsigned, Mint32 *) (* (u64) v *)
-  | _       => Vundef
+  | Vlong n => Some (Vlong n) (**r Mint64 *)
+  | Vint  n => Some (Vlong (Int64.repr (Int.unsigned n))) (**r Mint8unsigned, Mint16unsigned, Mint32 *) (* (u64) v *)
+  | _       => None
   end.
 
 Definition vlong_to_vint_or_vlong (chunk: memory_chunk) (v: val): val :=
   match v with
   | Vlong n =>
     match chunk with
-    | Mint8unsigned | Mint16unsigned | Mint32 => Vint (Int.repr (Int64.unsigned n))
+    | Mint8unsigned => Vint (Int.zero_ext 8 (Int.repr (Int64.unsigned n)))
+    | Mint16unsigned => Vint (Int.zero_ext 16 (Int.repr (Int64.unsigned n)))
+    | Mint32 => Vint (Int.repr (Int64.unsigned n))
     | Mint64 => Vlong n
     | _      => Vundef
     end
@@ -122,30 +157,28 @@ Definition vint_to_vint_or_vlong (chunk: memory_chunk) (v: val): val :=
   match v with
   | Vint n =>
     match chunk with
-    | Mint8unsigned | Mint16unsigned | Mint32 => Vint n
-    | Mint64 => Vlong (Int64.repr (Int.unsigned n))
+    | Mint8unsigned => (Vint (Int.zero_ext 8 n))
+    | Mint16unsigned => (Vint (Int.zero_ext 16 n))
+    | Mint32 => Vint n
+    | Mint64 => (Vlong (Int64.repr (Int.signed n)))
     | _      => Vundef
     end
   | _       => Vundef
   end.
 
-Definition load_mem (chunk: memory_chunk) (ptr: val) (st: state) :=
+Definition load_mem (chunk: memory_chunk) (ptr: val) (st: state): option val :=
   match chunk with
   | Mint8unsigned | Mint16unsigned | Mint32 =>
     match Mem.loadv chunk (bpf_m st) ptr with
     | Some res => _to_vlong res
-    | None => val64_zero
+    | None => None
     end
-  | Mint64 =>
-    match Mem.loadv Mint64 (bpf_m st) ptr with
-    | Some res => res
-    | None => val64_zero
-    end
-  | _ => val64_zero
+  | Mint64 => Mem.loadv chunk (bpf_m st) ptr
+  | _ => None
   end
 .
 
-Definition store_mem_imm (chunk: memory_chunk) (ptr: val) (v: val) (st: state): option state :=
+Definition store_mem_imm (ptr: val) (chunk: memory_chunk) (v: val) (st: state): option state :=
   match chunk with
   | Mint8unsigned | Mint16unsigned | Mint32 | Mint64 =>
     let src := vint_to_vint_or_vlong chunk v in
@@ -153,11 +186,11 @@ Definition store_mem_imm (chunk: memory_chunk) (ptr: val) (v: val) (st: state): 
       | Some m => Some (upd_mem m st)
       | None => None
       end
-  | _ => Some (upd_flag BPF_ILLEGAL_MEM st)
+  | _ => None
   end
 .
 
-Definition store_mem_reg (chunk: memory_chunk) (ptr: val) (v: val) (st: state): option state :=
+Definition store_mem_reg (ptr: val) (chunk: memory_chunk) (v: val) (st: state): option state :=
   match chunk with
   | Mint8unsigned | Mint16unsigned | Mint32 | Mint64 =>
     let src := vlong_to_vint_or_vlong chunk v in
@@ -165,7 +198,7 @@ Definition store_mem_reg (chunk: memory_chunk) (ptr: val) (v: val) (st: state): 
     | Some m => Some (upd_mem m st)
     | None => None
     end
-  | _ => Some (upd_flag BPF_ILLEGAL_MEM st)
+  | _ => None (*Some (upd_flag BPF_ILLEGAL_MEM st)*)
   end.
 
 Definition eval_ins_len (st: state): int := Int.repr (Z.of_nat (ins_len st)).

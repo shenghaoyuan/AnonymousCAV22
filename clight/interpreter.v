@@ -75,6 +75,7 @@ Definition ___compcert_va_composite : ident := $"__compcert_va_composite".
 Definition ___compcert_va_float64 : ident := $"__compcert_va_float64".
 Definition ___compcert_va_int32 : ident := $"__compcert_va_int32".
 Definition ___compcert_va_int64 : ident := $"__compcert_va_int64".
+Definition __bpf_get_call : ident := $"_bpf_get_call".
 Definition _addr : ident := $"addr".
 Definition _addr_ptr : ident := $"addr_ptr".
 Definition _block_perm : ident := $"block_perm".
@@ -90,7 +91,7 @@ Definition _check_mem__1 : ident := $"check_mem__1".
 Definition _check_mem_aux : ident := $"check_mem_aux".
 Definition _check_mem_aux2 : ident := $"check_mem_aux2".
 Definition _chunk : ident := $"chunk".
-Definition _comp_and_0x08_byte : ident := $"comp_and_0x08_byte".
+Definition _cmp_ptr32_nullM : ident := $"cmp_ptr32_nullM".
 Definition _cur_mr : ident := $"cur_mr".
 Definition _d : ident := $"d".
 Definition _dst : ident := $"dst".
@@ -104,13 +105,14 @@ Definition _eval_mrs_num : ident := $"eval_mrs_num".
 Definition _eval_mrs_regions : ident := $"eval_mrs_regions".
 Definition _eval_pc : ident := $"eval_pc".
 Definition _eval_reg : ident := $"eval_reg".
+Definition _exec_function : ident := $"exec_function".
 Definition _f : ident := $"f".
+Definition _f_ptr : ident := $"f_ptr".
 Definition _fuel : ident := $"fuel".
 Definition _fuel0 : ident := $"fuel0".
 Definition _get_add : ident := $"get_add".
 Definition _get_addr_ofs : ident := $"get_addr_ofs".
 Definition _get_block_perm : ident := $"get_block_perm".
-Definition _get_block_ptr : ident := $"get_block_ptr".
 Definition _get_block_size : ident := $"get_block_size".
 Definition _get_dst : ident := $"get_dst".
 Definition _get_immediate : ident := $"get_immediate".
@@ -126,6 +128,8 @@ Definition _get_opcode_mem_ld_reg : ident := $"get_opcode_mem_ld_reg".
 Definition _get_opcode_mem_st_imm : ident := $"get_opcode_mem_st_imm".
 Definition _get_opcode_mem_st_reg : ident := $"get_opcode_mem_st_reg".
 Definition _get_src : ident := $"get_src".
+Definition _get_src32 : ident := $"get_src32".
+Definition _get_src64 : ident := $"get_src64".
 Definition _get_start_addr : ident := $"get_start_addr".
 Definition _get_sub : ident := $"get_sub".
 Definition _hi_ofs : ident := $"hi_ofs".
@@ -135,9 +139,10 @@ Definition _imm : ident := $"imm".
 Definition _imm64 : ident := $"imm64".
 Definition _ins : ident := $"ins".
 Definition _ins_len : ident := $"ins_len".
-Definition _is_imm : ident := $"is_imm".
+Definition _is_null : ident := $"is_null".
 Definition _is_well_chunk_bool : ident := $"is_well_chunk_bool".
 Definition _len : ident := $"len".
+Definition _len0 : ident := $"len0".
 Definition _lo_ofs : ident := $"lo_ofs".
 Definition _load_mem : ident := $"load_mem".
 Definition _main : ident := $"main".
@@ -148,8 +153,6 @@ Definition _mr_perm : ident := $"mr_perm".
 Definition _mrs : ident := $"mrs".
 Definition _mrs_num : ident := $"mrs_num".
 Definition _n : ident := $"n".
-Definition _next_imm : ident := $"next_imm".
-Definition _next_ins : ident := $"next_ins".
 Definition _num : ident := $"num".
 Definition _ofs : ident := $"ofs".
 Definition _op : ident := $"op".
@@ -160,10 +163,12 @@ Definition _opcode_jmp : ident := $"opcode_jmp".
 Definition _opcode_ld : ident := $"opcode_ld".
 Definition _opcode_st : ident := $"opcode_st".
 Definition _pc : ident := $"pc".
+Definition _pc0 : ident := $"pc0".
 Definition _perm : ident := $"perm".
 Definition _ptr : ident := $"ptr".
 Definition _reg64_to_reg32 : ident := $"reg64_to_reg32".
 Definition _regsmap : ident := $"regsmap".
+Definition _res : ident := $"res".
 Definition _size : ident := $"size".
 Definition _src : ident := $"src".
 Definition _src32 : ident := $"src32".
@@ -211,25 +216,8 @@ Definition _t'25 : ident := 152%positive.
 Definition _t'26 : ident := 153%positive.
 Definition _t'27 : ident := 154%positive.
 Definition _t'28 : ident := 155%positive.
-Definition _t'29 : ident := 156%positive.
 Definition _t'3 : ident := 130%positive.
-Definition _t'30 : ident := 157%positive.
-Definition _t'31 : ident := 158%positive.
-Definition _t'32 : ident := 159%positive.
-Definition _t'33 : ident := 160%positive.
-Definition _t'34 : ident := 161%positive.
-Definition _t'35 : ident := 162%positive.
-Definition _t'36 : ident := 163%positive.
-Definition _t'37 : ident := 164%positive.
-Definition _t'38 : ident := 165%positive.
-Definition _t'39 : ident := 166%positive.
 Definition _t'4 : ident := 131%positive.
-Definition _t'40 : ident := 167%positive.
-Definition _t'41 : ident := 168%positive.
-Definition _t'42 : ident := 169%positive.
-Definition _t'43 : ident := 170%positive.
-Definition _t'44 : ident := 171%positive.
-Definition _t'45 : ident := 172%positive.
 Definition _t'5 : ident := 132%positive.
 Definition _t'6 : ident := 133%positive.
 Definition _t'7 : ident := 134%positive.
@@ -237,7 +225,7 @@ Definition _t'8 : ident := 135%positive.
 Definition _t'9 : ident := 136%positive.
 
 Definition f_eval_pc := {|
-  fn_return := tint;
+  fn_return := tuint;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: nil);
   fn_vars := nil;
@@ -245,13 +233,13 @@ Definition f_eval_pc := {|
   fn_body :=
 (Sreturn (Some (Efield
                  (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
-                   (Tstruct _bpf_state noattr)) _state_pc tint)))
+                   (Tstruct _bpf_state noattr)) _state_pc tuint)))
 |}.
 
 Definition f_upd_pc := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
-  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_pc, tint) ::
+  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_pc, tuint) ::
                 nil);
   fn_vars := nil;
   fn_temps := nil;
@@ -260,7 +248,7 @@ Definition f_upd_pc := {|
   (Sassign
     (Efield
       (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
-        (Tstruct _bpf_state noattr)) _state_pc tint) (Etempvar _pc tint))
+        (Tstruct _bpf_state noattr)) _state_pc tuint) (Etempvar _pc tuint))
   (Sreturn None))
 |}.
 
@@ -275,12 +263,12 @@ Definition f_upd_pc_incr := {|
   (Sassign
     (Efield
       (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
-        (Tstruct _bpf_state noattr)) _state_pc tint)
+        (Tstruct _bpf_state noattr)) _state_pc tuint)
     (Ebinop Oadd
       (Efield
         (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
-          (Tstruct _bpf_state noattr)) _state_pc tint)
-      (Econst_int (Int.repr 1) tint) tint))
+          (Tstruct _bpf_state noattr)) _state_pc tuint)
+      (Econst_int (Int.repr 1) tint) tuint))
   (Sreturn None))
 |}.
 
@@ -408,7 +396,7 @@ Definition f_store_mem_reg := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
-                (_chunk, tuint) :: (_addr, (tptr tuchar)) :: (_v, tulong) ::
+                (_addr, (tptr tuchar)) :: (_chunk, tuint) :: (_v, tulong) ::
                 nil);
   fn_vars := nil;
   fn_temps := nil;
@@ -445,7 +433,7 @@ Definition f_store_mem_imm := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
-                (_chunk, tuint) :: (_addr, (tptr tuchar)) :: (_v, tint) ::
+                (_addr, (tptr tuchar)) :: (_chunk, tuint) :: (_v, tint) ::
                 nil);
   fn_vars := nil;
   fn_temps := nil;
@@ -479,7 +467,7 @@ Definition f_store_mem_imm := {|
 |}.
 
 Definition f_eval_ins_len := {|
-  fn_return := tint;
+  fn_return := tuint;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: nil);
   fn_vars := nil;
@@ -487,13 +475,13 @@ Definition f_eval_ins_len := {|
   fn_body :=
 (Sreturn (Some (Efield
                  (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
-                   (Tstruct _bpf_state noattr)) _ins_len tint)))
+                   (Tstruct _bpf_state noattr)) _ins_len tuint)))
 |}.
 
 Definition f_eval_ins := {|
   fn_return := tulong;
   fn_callconv := cc_default;
-  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_idx, tint) ::
+  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_idx, tuint) ::
                 nil);
   fn_vars := nil;
   fn_temps := nil;
@@ -504,20 +492,18 @@ Definition f_eval_ins := {|
                      (Ederef
                        (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
                        (Tstruct _bpf_state noattr)) _ins (tptr tulong))
-                   (Etempvar _idx tint) (tptr tulong)) tulong)))
+                   (Etempvar _idx tuint) (tptr tulong)) tulong)))
 |}.
 
-Definition f_get_mem_region := {|
-  fn_return := (tptr (Tstruct _memory_region noattr));
+Definition f_cmp_ptr32_nullM := {|
+  fn_return := tbool;
   fn_callconv := cc_default;
-  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_n, tuint) ::
-                (_mrs, (tptr (Tstruct _memory_region noattr))) :: nil);
+  fn_params := ((_addr, (tptr tuchar)) :: nil);
   fn_vars := nil;
   fn_temps := nil;
   fn_body :=
-(Sreturn (Some (Ebinop Oadd
-                 (Etempvar _mrs (tptr (Tstruct _memory_region noattr)))
-                 (Etempvar _n tuint) (tptr (Tstruct _memory_region noattr)))))
+(Sreturn (Some (Ebinop Oeq (Etempvar _addr (tptr tuchar))
+                 (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid)) tint)))
 |}.
 
 Definition f_get_dst := {|
@@ -534,16 +520,6 @@ Definition f_get_dst := {|
                    (Econst_long (Int64.repr 8) tulong) tulong) tuint)))
 |}.
 
-Definition f_reg64_to_reg32 := {|
-  fn_return := tuint;
-  fn_callconv := cc_default;
-  fn_params := ((_d, tulong) :: nil);
-  fn_vars := nil;
-  fn_temps := nil;
-  fn_body :=
-(Sreturn (Some (Ecast (Etempvar _d tulong) tuint)))
-|}.
-
 Definition f_get_src := {|
   fn_return := tuint;
   fn_callconv := cc_default;
@@ -556,6 +532,59 @@ Definition f_get_src := {|
                    (Ebinop Oand (Etempvar _ins tulong)
                      (Econst_long (Int64.repr 65535) tulong) tulong)
                    (Econst_long (Int64.repr 12) tulong) tulong) tuint)))
+|}.
+
+Definition f_get_mem_region := {|
+  fn_return := (tptr (Tstruct _memory_region noattr));
+  fn_callconv := cc_default;
+  fn_params := ((_n, tuint) ::
+                (_mrs, (tptr (Tstruct _memory_region noattr))) :: nil);
+  fn_vars := nil;
+  fn_temps := nil;
+  fn_body :=
+(Sreturn (Some (Ebinop Oadd
+                 (Etempvar _mrs (tptr (Tstruct _memory_region noattr)))
+                 (Etempvar _n tuint) (tptr (Tstruct _memory_region noattr)))))
+|}.
+
+Definition f__bpf_get_call := {|
+  fn_return := (tptr tuchar);
+  fn_callconv := cc_default;
+  fn_params := ((_imm, tint) :: nil);
+  fn_vars := nil;
+  fn_temps := nil;
+  fn_body :=
+(Sreturn (Some (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))))
+|}.
+
+Definition f_exec_function := {|
+  fn_return := tuint;
+  fn_callconv := cc_default;
+  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
+                (_ptr, (tptr tuchar)) :: nil);
+  fn_vars := nil;
+  fn_temps := nil;
+  fn_body :=
+(Sifthenelse (Ebinop Oeq (Etempvar _ptr (tptr tuchar))
+               (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid)) tint)
+  (Ssequence
+    (Sassign
+      (Efield
+        (Ederef (Etempvar _st (tptr (Tstruct _bpf_state noattr)))
+          (Tstruct _bpf_state noattr)) _bpf_flag tint)
+      (Eunop Oneg (Econst_int (Int.repr 4) tint) tint))
+    (Sreturn (Some (Econst_int (Int.repr 0) tuint))))
+  (Sreturn (Some (Econst_int (Int.repr 0) tuint))))
+|}.
+
+Definition f_reg64_to_reg32 := {|
+  fn_return := tuint;
+  fn_callconv := cc_default;
+  fn_params := ((_d, tulong) :: nil);
+  fn_vars := nil;
+  fn_temps := nil;
+  fn_body :=
+(Sreturn (Some (Ecast (Etempvar _d tulong) tuint)))
 |}.
 
 Definition f_get_offset := {|
@@ -594,6 +623,95 @@ Definition f_eval_immediate := {|
   fn_temps := nil;
   fn_body :=
 (Sreturn (Some (Ecast (Etempvar _ins tint) tlong)))
+|}.
+
+Definition f_get_src64 := {|
+  fn_return := tulong;
+  fn_callconv := cc_default;
+  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_x, tuchar) ::
+                (_ins, tulong) :: nil);
+  fn_vars := nil;
+  fn_temps := ((_imm, tint) :: (_imm64, tlong) :: (_src, tuint) ::
+               (_src64, tulong) :: (_t'4, tulong) :: (_t'3, tuint) ::
+               (_t'2, tlong) :: (_t'1, tint) :: nil);
+  fn_body :=
+(Sifthenelse (Ebinop Oeq (Econst_int (Int.repr 0) tuint)
+               (Ebinop Oand (Etempvar _x tuchar)
+                 (Econst_int (Int.repr 8) tuint) tuint) tint)
+  (Ssequence
+    (Ssequence
+      (Scall (Some _t'1)
+        (Evar _get_immediate (Tfunction (Tcons tulong Tnil) tint cc_default))
+        ((Etempvar _ins tulong) :: nil))
+      (Sset _imm (Etempvar _t'1 tint)))
+    (Ssequence
+      (Ssequence
+        (Scall (Some _t'2)
+          (Evar _eval_immediate (Tfunction (Tcons tint Tnil) tlong
+                                  cc_default)) ((Etempvar _imm tint) :: nil))
+        (Sset _imm64 (Etempvar _t'2 tlong)))
+      (Sreturn (Some (Ecast (Etempvar _imm64 tlong) tulong)))))
+  (Ssequence
+    (Ssequence
+      (Scall (Some _t'3)
+        (Evar _get_src (Tfunction (Tcons tulong Tnil) tuint cc_default))
+        ((Etempvar _ins tulong) :: nil))
+      (Sset _src (Etempvar _t'3 tuint)))
+    (Ssequence
+      (Ssequence
+        (Scall (Some _t'4)
+          (Evar _eval_reg (Tfunction
+                            (Tcons (tptr (Tstruct _bpf_state noattr))
+                              (Tcons tuint Tnil)) tulong cc_default))
+          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+           (Etempvar _src tuint) :: nil))
+        (Sset _src64 (Etempvar _t'4 tulong)))
+      (Sreturn (Some (Etempvar _src64 tulong))))))
+|}.
+
+Definition f_get_src32 := {|
+  fn_return := tuint;
+  fn_callconv := cc_default;
+  fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_x, tuchar) ::
+                (_ins, tulong) :: nil);
+  fn_vars := nil;
+  fn_temps := ((_imm, tint) :: (_src, tuint) :: (_src64, tulong) ::
+               (_src32, tuint) :: (_t'4, tuint) :: (_t'3, tulong) ::
+               (_t'2, tuint) :: (_t'1, tint) :: nil);
+  fn_body :=
+(Sifthenelse (Ebinop Oeq (Econst_int (Int.repr 0) tuint)
+               (Ebinop Oand (Etempvar _x tuchar)
+                 (Econst_int (Int.repr 8) tuint) tuint) tint)
+  (Ssequence
+    (Ssequence
+      (Scall (Some _t'1)
+        (Evar _get_immediate (Tfunction (Tcons tulong Tnil) tint cc_default))
+        ((Etempvar _ins tulong) :: nil))
+      (Sset _imm (Etempvar _t'1 tint)))
+    (Sreturn (Some (Etempvar _imm tint))))
+  (Ssequence
+    (Ssequence
+      (Scall (Some _t'2)
+        (Evar _get_src (Tfunction (Tcons tulong Tnil) tuint cc_default))
+        ((Etempvar _ins tulong) :: nil))
+      (Sset _src (Etempvar _t'2 tuint)))
+    (Ssequence
+      (Ssequence
+        (Scall (Some _t'3)
+          (Evar _eval_reg (Tfunction
+                            (Tcons (tptr (Tstruct _bpf_state noattr))
+                              (Tcons tuint Tnil)) tulong cc_default))
+          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+           (Etempvar _src tuint) :: nil))
+        (Sset _src64 (Etempvar _t'3 tulong)))
+      (Ssequence
+        (Ssequence
+          (Scall (Some _t'4)
+            (Evar _reg64_to_reg32 (Tfunction (Tcons tulong Tnil) tuint
+                                    cc_default))
+            ((Etempvar _src64 tulong) :: nil))
+          (Sset _src32 (Etempvar _t'4 tuint)))
+        (Sreturn (Some (Etempvar _src32 tuint)))))))
 |}.
 
 Definition f_get_opcode_ins := {|
@@ -736,19 +854,6 @@ Definition f_get_addr_ofs := {|
                    (Ecast (Etempvar _ofs tint) tulong) tulong) tuint)))
 |}.
 
-Definition f_get_block_ptr := {|
-  fn_return := (tptr tuchar);
-  fn_callconv := cc_default;
-  fn_params := ((_mr, (tptr (Tstruct _memory_region noattr))) :: nil);
-  fn_vars := nil;
-  fn_temps := nil;
-  fn_body :=
-(Sreturn (Some (Efield
-                 (Ederef
-                   (Etempvar _mr (tptr (Tstruct _memory_region noattr)))
-                   (Tstruct _memory_region noattr)) _block_ptr (tptr tuchar))))
-|}.
-
 Definition f_get_start_addr := {|
   fn_return := tuint;
   fn_callconv := cc_default;
@@ -813,105 +918,82 @@ Definition f_check_mem_aux2 := {|
   fn_params := ((_mr, (tptr (Tstruct _memory_region noattr))) ::
                 (_perm, tuint) :: (_addr, tuint) :: (_chunk, tuint) :: nil);
   fn_vars := nil;
-  fn_temps := ((_well_chunk, tbool) :: (_ptr, (tptr tuchar)) ::
-               (_start, tuint) :: (_size, tuint) :: (_mr_perm, tuint) ::
-               (_lo_ofs, tuint) :: (_hi_ofs, tuint) :: (_t'9, tint) ::
-               (_t'8, tint) :: (_t'7, tuint) :: (_t'6, tuint) ::
-               (_t'5, tuint) :: (_t'4, tuint) :: (_t'3, tuint) ::
-               (_t'2, (tptr tuchar)) :: (_t'1, tbool) :: nil);
+  fn_temps := ((_start, tuint) :: (_size, tuint) :: (_mr_perm, tuint) ::
+               (_lo_ofs, tuint) :: (_hi_ofs, tuint) :: (_t'7, tint) ::
+               (_t'6, tint) :: (_t'5, tuint) :: (_t'4, tuint) ::
+               (_t'3, tuint) :: (_t'2, tuint) :: (_t'1, tuint) :: nil);
   fn_body :=
 (Ssequence
   (Ssequence
     (Scall (Some _t'1)
-      (Evar _is_well_chunk_bool (Tfunction (Tcons tuint Tnil) tbool
-                                  cc_default))
-      ((Etempvar _chunk tuint) :: nil))
-    (Sset _well_chunk (Ecast (Etempvar _t'1 tbool) tbool)))
-  (Sifthenelse (Etempvar _well_chunk tbool)
+      (Evar _get_start_addr (Tfunction
+                              (Tcons (tptr (Tstruct _memory_region noattr))
+                                Tnil) tuint cc_default))
+      ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) :: nil))
+    (Sset _start (Etempvar _t'1 tuint)))
+  (Ssequence
+    (Ssequence
+      (Scall (Some _t'2)
+        (Evar _get_block_size (Tfunction
+                                (Tcons (tptr (Tstruct _memory_region noattr))
+                                  Tnil) tuint cc_default))
+        ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) :: nil))
+      (Sset _size (Etempvar _t'2 tuint)))
     (Ssequence
       (Ssequence
-        (Scall (Some _t'2)
-          (Evar _get_block_ptr (Tfunction
-                                 (Tcons
-                                   (tptr (Tstruct _memory_region noattr))
-                                   Tnil) (tptr tuchar) cc_default))
+        (Scall (Some _t'3)
+          (Evar _get_block_perm (Tfunction
+                                  (Tcons
+                                    (tptr (Tstruct _memory_region noattr))
+                                    Tnil) tuint cc_default))
           ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) :: nil))
-        (Sset _ptr (Etempvar _t'2 (tptr tuchar))))
+        (Sset _mr_perm (Etempvar _t'3 tuint)))
       (Ssequence
         (Ssequence
-          (Scall (Some _t'3)
-            (Evar _get_start_addr (Tfunction
-                                    (Tcons
-                                      (tptr (Tstruct _memory_region noattr))
-                                      Tnil) tuint cc_default))
-            ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) :: nil))
-          (Sset _start (Etempvar _t'3 tuint)))
+          (Scall (Some _t'4)
+            (Evar _get_sub (Tfunction (Tcons tuint (Tcons tuint Tnil)) tuint
+                             cc_default))
+            ((Etempvar _addr tuint) :: (Etempvar _start tuint) :: nil))
+          (Sset _lo_ofs (Etempvar _t'4 tuint)))
         (Ssequence
           (Ssequence
-            (Scall (Some _t'4)
-              (Evar _get_block_size (Tfunction
-                                      (Tcons
-                                        (tptr (Tstruct _memory_region noattr))
-                                        Tnil) tuint cc_default))
-              ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) :: nil))
-            (Sset _size (Etempvar _t'4 tuint)))
+            (Scall (Some _t'5)
+              (Evar _get_add (Tfunction (Tcons tuint (Tcons tuint Tnil))
+                               tuint cc_default))
+              ((Etempvar _lo_ofs tuint) :: (Etempvar _chunk tuint) :: nil))
+            (Sset _hi_ofs (Etempvar _t'5 tuint)))
           (Ssequence
             (Ssequence
-              (Scall (Some _t'5)
-                (Evar _get_block_perm (Tfunction
-                                        (Tcons
-                                          (tptr (Tstruct _memory_region noattr))
-                                          Tnil) tuint cc_default))
-                ((Etempvar _mr (tptr (Tstruct _memory_region noattr))) ::
-                 nil))
-              (Sset _mr_perm (Etempvar _t'5 tuint)))
-            (Ssequence
-              (Ssequence
-                (Scall (Some _t'6)
-                  (Evar _get_sub (Tfunction (Tcons tuint (Tcons tuint Tnil))
-                                   tuint cc_default))
-                  ((Etempvar _addr tuint) :: (Etempvar _start tuint) :: nil))
-                (Sset _lo_ofs (Etempvar _t'6 tuint)))
-              (Ssequence
-                (Ssequence
-                  (Scall (Some _t'7)
-                    (Evar _get_add (Tfunction
-                                     (Tcons tuint (Tcons tuint Tnil)) tuint
-                                     cc_default))
-                    ((Etempvar _lo_ofs tuint) :: (Etempvar _chunk tuint) ::
-                     nil))
-                  (Sset _hi_ofs (Etempvar _t'7 tuint)))
-                (Ssequence
-                  (Sifthenelse (Ebinop Ole (Econst_int (Int.repr 0) tuint)
-                                 (Etempvar _lo_ofs tuint) tint)
-                    (Sset _t'9
+              (Sifthenelse (Ebinop Olt (Etempvar _hi_ofs tuint)
+                             (Etempvar _size tuint) tint)
+                (Sifthenelse (Ebinop Ole (Etempvar _lo_ofs tuint)
+                               (Ebinop Osub
+                                 (Econst_int (Int.repr (-1)) tuint)
+                                 (Etempvar _chunk tuint) tuint) tint)
+                  (Ssequence
+                    (Sset _t'6
                       (Ecast
-                        (Ebinop Olt (Etempvar _hi_ofs tuint)
-                          (Etempvar _size tuint) tint) tbool))
-                    (Sset _t'9 (Econst_int (Int.repr 0) tint)))
-                  (Sifthenelse (Etempvar _t'9 tint)
-                    (Ssequence
-                      (Sifthenelse (Ebinop Ole (Etempvar _lo_ofs tuint)
-                                     (Ebinop Osub
-                                       (Econst_int (Int.repr (-1)) tuint)
-                                       (Etempvar _chunk tuint) tuint) tint)
-                        (Sset _t'8
-                          (Ecast
-                            (Ebinop Oeq (Econst_int (Int.repr 0) tuint)
-                              (Ebinop Omod (Etempvar _lo_ofs tuint)
-                                (Etempvar _chunk tuint) tuint) tint) tbool))
-                        (Sset _t'8 (Econst_int (Int.repr 0) tint)))
-                      (Sifthenelse (Etempvar _t'8 tint)
-                        (Sifthenelse (Ebinop Oge (Etempvar _mr_perm tuint)
-                                       (Etempvar _perm tuint) tint)
-                          (Sreturn (Some (Ebinop Oadd
-                                           (Etempvar _ptr (tptr tuchar))
-                                           (Etempvar _lo_ofs tuint)
-                                           (tptr tuchar))))
-                          (Sreturn (Some (Econst_int (Int.repr 0) tint))))
-                        (Sreturn (Some (Econst_int (Int.repr 0) tint)))))
-                    (Sreturn (Some (Econst_int (Int.repr 0) tint)))))))))))
-    (Sreturn (Some (Econst_int (Int.repr 0) tint)))))
+                        (Ebinop Oeq (Econst_int (Int.repr 0) tuint)
+                          (Ebinop Omod (Etempvar _lo_ofs tuint)
+                            (Etempvar _chunk tuint) tuint) tint) tbool))
+                    (Sset _t'6 (Ecast (Etempvar _t'6 tint) tbool)))
+                  (Sset _t'6 (Ecast (Econst_int (Int.repr 0) tint) tbool)))
+                (Sset _t'6 (Econst_int (Int.repr 0) tint)))
+              (Sifthenelse (Etempvar _t'6 tint)
+                (Sset _t'7
+                  (Ecast
+                    (Ebinop Oge (Etempvar _mr_perm tuint)
+                      (Etempvar _perm tuint) tint) tbool))
+                (Sset _t'7 (Econst_int (Int.repr 0) tint))))
+            (Sifthenelse (Etempvar _t'7 tint)
+              (Sreturn (Some (Ebinop Oadd
+                               (Efield
+                                 (Ederef
+                                   (Etempvar _mr (tptr (Tstruct _memory_region noattr)))
+                                   (Tstruct _memory_region noattr))
+                                 _block_ptr (tptr tuchar))
+                               (Etempvar _lo_ofs tuint) (tptr tuchar))))
+              (Sreturn (Some (Econst_int (Int.repr 0) tint))))))))))
 |}.
 
 Definition f_check_mem_aux := {|
@@ -923,7 +1005,8 @@ Definition f_check_mem_aux := {|
   fn_vars := nil;
   fn_temps := ((_n, tuint) ::
                (_cur_mr, (tptr (Tstruct _memory_region noattr))) ::
-               (_check_mem, (tptr tuchar)) :: (_t'3, (tptr tuchar)) ::
+               (_check_mem__1, (tptr tuchar)) :: (_is_null, tbool) ::
+               (_t'4, (tptr tuchar)) :: (_t'3, tbool) ::
                (_t'2, (tptr tuchar)) ::
                (_t'1, (tptr (Tstruct _memory_region noattr))) :: nil);
   fn_body :=
@@ -938,15 +1021,13 @@ Definition f_check_mem_aux := {|
       (Ssequence
         (Scall (Some _t'1)
           (Evar _get_mem_region (Tfunction
-                                  (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tuint
-                                      (Tcons
-                                        (tptr (Tstruct _memory_region noattr))
-                                        Tnil)))
+                                  (Tcons tuint
+                                    (Tcons
+                                      (tptr (Tstruct _memory_region noattr))
+                                      Tnil))
                                   (tptr (Tstruct _memory_region noattr))
                                   cc_default))
-          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-           (Etempvar _n tuint) ::
+          ((Etempvar _n tuint) ::
            (Etempvar _mrs (tptr (Tstruct _memory_region noattr))) :: nil))
         (Sset _cur_mr (Etempvar _t'1 (tptr (Tstruct _memory_region noattr)))))
       (Ssequence
@@ -961,29 +1042,35 @@ Definition f_check_mem_aux := {|
             ((Etempvar _cur_mr (tptr (Tstruct _memory_region noattr))) ::
              (Etempvar _perm tuint) :: (Etempvar _addr tuint) ::
              (Etempvar _chunk tuint) :: nil))
-          (Sset _check_mem (Etempvar _t'2 (tptr tuchar))))
-        (Sifthenelse (Ebinop Oeq (Etempvar _check_mem (tptr tuchar))
-                       (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                       tint)
+          (Sset _check_mem__1 (Etempvar _t'2 (tptr tuchar))))
+        (Ssequence
           (Ssequence
             (Scall (Some _t'3)
-              (Evar _check_mem_aux (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
+              (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                       tbool cc_default))
+              ((Etempvar _check_mem__1 (tptr tuchar)) :: nil))
+            (Sset _is_null (Ecast (Etempvar _t'3 tbool) tbool)))
+          (Sifthenelse (Etempvar _is_null tbool)
+            (Ssequence
+              (Scall (Some _t'4)
+                (Evar _check_mem_aux (Tfunction
+                                       (Tcons
+                                         (tptr (Tstruct _bpf_state noattr))
                                          (Tcons tuint
                                            (Tcons tuint
                                              (Tcons tuint
-                                               (Tcons
-                                                 (tptr (Tstruct _memory_region noattr))
-                                                 Tnil)))))) (tptr tuchar)
-                                     cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Etempvar _n tuint) :: (Etempvar _perm tuint) ::
-               (Etempvar _chunk tuint) :: (Etempvar _addr tuint) ::
-               (Etempvar _mrs (tptr (Tstruct _memory_region noattr))) :: nil))
-            (Sreturn (Some (Etempvar _t'3 (tptr tuchar)))))
-          (Sreturn (Some (Etempvar _check_mem (tptr tuchar)))))))))
+                                               (Tcons tuint
+                                                 (Tcons
+                                                   (tptr (Tstruct _memory_region noattr))
+                                                   Tnil)))))) (tptr tuchar)
+                                       cc_default))
+                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                 (Etempvar _n tuint) :: (Etempvar _perm tuint) ::
+                 (Etempvar _chunk tuint) :: (Etempvar _addr tuint) ::
+                 (Etempvar _mrs (tptr (Tstruct _memory_region noattr))) ::
+                 nil))
+              (Sreturn (Some (Etempvar _t'4 (tptr tuchar)))))
+            (Sreturn (Some (Etempvar _check_mem__1 (tptr tuchar))))))))))
 |}.
 
 Definition f_check_mem := {|
@@ -994,7 +1081,8 @@ Definition f_check_mem := {|
   fn_vars := nil;
   fn_temps := ((_well_chunk, tbool) :: (_mem_reg_num, tuint) ::
                (_mrs, (tptr (Tstruct _memory_region noattr))) ::
-               (_check_mem__1, (tptr tuchar)) :: (_t'4, (tptr tuchar)) ::
+               (_check_mem__1, (tptr tuchar)) :: (_is_null, tbool) ::
+               (_t'5, tbool) :: (_t'4, (tptr tuchar)) ::
                (_t'3, (tptr (Tstruct _memory_region noattr))) ::
                (_t'2, tuint) :: (_t'1, tbool) :: nil);
   fn_body :=
@@ -1044,24 +1132,17 @@ Definition f_check_mem := {|
                (Etempvar _chunk tuint) :: (Etempvar _addr tuint) ::
                (Etempvar _mrs (tptr (Tstruct _memory_region noattr))) :: nil))
             (Sset _check_mem__1 (Etempvar _t'4 (tptr tuchar))))
-          (Sifthenelse (Ebinop Oeq (Etempvar _check_mem__1 (tptr tuchar))
-                         (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                         tint)
-            (Sreturn (Some (Econst_int (Int.repr 0) tint)))
-            (Sreturn (Some (Etempvar _check_mem__1 (tptr tuchar))))))))
+          (Ssequence
+            (Ssequence
+              (Scall (Some _t'5)
+                (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                         tbool cc_default))
+                ((Etempvar _check_mem__1 (tptr tuchar)) :: nil))
+              (Sset _is_null (Ecast (Etempvar _t'5 tbool) tbool)))
+            (Sifthenelse (Etempvar _is_null tbool)
+              (Sreturn (Some (Econst_int (Int.repr 0) tint)))
+              (Sreturn (Some (Etempvar _check_mem__1 (tptr tuchar)))))))))
     (Sreturn (Some (Econst_int (Int.repr 0) tint)))))
-|}.
-
-Definition f_comp_and_0x08_byte := {|
-  fn_return := tbool;
-  fn_callconv := cc_default;
-  fn_params := ((_x, tuchar) :: nil);
-  fn_vars := nil;
-  fn_temps := nil;
-  fn_body :=
-(Sreturn (Some (Ebinop Oeq (Econst_int (Int.repr 0) tint)
-                 (Ebinop Oand (Etempvar _x tuchar)
-                   (Econst_int (Int.repr 8) tint) tint) tint)))
 |}.
 
 Definition f_step_opcode_alu64 := {|
@@ -1340,10 +1421,11 @@ Definition f_step_opcode_alu64 := {|
                                                        cc_default))
                                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                        (Etempvar _dst tuint) ::
-                                       (Ebinop Oshr
-                                         (Ecast (Etempvar _dst64 tulong)
-                                           tlong) (Etempvar _src32 tuint)
-                                         tlong) :: nil))
+                                       (Ecast
+                                         (Ebinop Oshr
+                                           (Ecast (Etempvar _dst64 tulong)
+                                             tlong) (Etempvar _src32 tuint)
+                                           tlong) tulong) :: nil))
                                     (Sreturn None))
                                   (Ssequence
                                     (Scall None
@@ -1673,10 +1755,13 @@ Definition f_step_opcode_branch := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
-                (_dst64, tulong) :: (_src64, tulong) :: (_pc, tint) ::
-                (_ofs, tint) :: (_op, tuchar) :: nil);
+                (_dst64, tulong) :: (_src64, tulong) :: (_pc, tuint) ::
+                (_ofs, tuint) :: (_op, tuchar) :: nil);
   fn_vars := nil;
-  fn_temps := ((_opcode_jmp, tuchar) :: (_t'1, tuchar) :: nil);
+  fn_temps := ((_opcode_jmp, tuchar) :: (_f_ptr, (tptr tuchar)) ::
+               (_is_null, tbool) :: (_res, tuint) :: (_t'4, tuint) ::
+               (_t'3, tbool) :: (_t'2, (tptr tuchar)) :: (_t'1, tuchar) ::
+               nil);
   fn_body :=
 (Ssequence
   (Ssequence
@@ -1692,9 +1777,9 @@ Definition f_step_opcode_branch := {|
           (Scall None
             (Evar _upd_pc (Tfunction
                             (Tcons (tptr (Tstruct _bpf_state noattr))
-                              (Tcons tint Tnil)) tvoid cc_default))
+                              (Tcons tuint Tnil)) tvoid cc_default))
             ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-             (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint) tint) ::
+             (Ebinop Oadd (Etempvar _pc tuint) (Etempvar _ofs tuint) tuint) ::
              nil))
           (Sreturn None))
         (Ssequence
@@ -1712,9 +1797,9 @@ Definition f_step_opcode_branch := {|
             (Scall None
               (Evar _upd_pc (Tfunction
                               (Tcons (tptr (Tstruct _bpf_state noattr))
-                                (Tcons tint Tnil)) tvoid cc_default))
+                                (Tcons tuint Tnil)) tvoid cc_default))
               ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint) tint) ::
+               (Ebinop Oadd (Etempvar _pc tuint) (Etempvar _ofs tuint) tuint) ::
                nil))
             (Sreturn None))
           (Sreturn None))
@@ -1725,10 +1810,10 @@ Definition f_step_opcode_branch := {|
               (Scall None
                 (Evar _upd_pc (Tfunction
                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tint Tnil)) tvoid cc_default))
+                                  (Tcons tuint Tnil)) tvoid cc_default))
                 ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint) tint) ::
-                 nil))
+                 (Ebinop Oadd (Etempvar _pc tuint) (Etempvar _ofs tuint)
+                   tuint) :: nil))
               (Sreturn None))
             (Sreturn None))
           (LScons (Some 48)
@@ -1738,10 +1823,10 @@ Definition f_step_opcode_branch := {|
                 (Scall None
                   (Evar _upd_pc (Tfunction
                                   (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tint Tnil)) tvoid cc_default))
+                                    (Tcons tuint Tnil)) tvoid cc_default))
                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint)
-                     tint) :: nil))
+                   (Ebinop Oadd (Etempvar _pc tuint) (Etempvar _ofs tuint)
+                     tuint) :: nil))
                 (Sreturn None))
               (Sreturn None))
             (LScons (Some 160)
@@ -1751,10 +1836,10 @@ Definition f_step_opcode_branch := {|
                   (Scall None
                     (Evar _upd_pc (Tfunction
                                     (Tcons (tptr (Tstruct _bpf_state noattr))
-                                      (Tcons tint Tnil)) tvoid cc_default))
+                                      (Tcons tuint Tnil)) tvoid cc_default))
                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint)
-                       tint) :: nil))
+                     (Ebinop Oadd (Etempvar _pc tuint) (Etempvar _ofs tuint)
+                       tuint) :: nil))
                   (Sreturn None))
                 (Sreturn None))
               (LScons (Some 176)
@@ -1765,10 +1850,10 @@ Definition f_step_opcode_branch := {|
                       (Evar _upd_pc (Tfunction
                                       (Tcons
                                         (tptr (Tstruct _bpf_state noattr))
-                                        (Tcons tint Tnil)) tvoid cc_default))
+                                        (Tcons tuint Tnil)) tvoid cc_default))
                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                       (Ebinop Oadd (Etempvar _pc tint) (Etempvar _ofs tint)
-                         tint) :: nil))
+                       (Ebinop Oadd (Etempvar _pc tuint)
+                         (Etempvar _ofs tuint) tuint) :: nil))
                     (Sreturn None))
                   (Sreturn None))
                 (LScons (Some 64)
@@ -1781,11 +1866,11 @@ Definition f_step_opcode_branch := {|
                         (Evar _upd_pc (Tfunction
                                         (Tcons
                                           (tptr (Tstruct _bpf_state noattr))
-                                          (Tcons tint Tnil)) tvoid
+                                          (Tcons tuint Tnil)) tvoid
                                         cc_default))
                         ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                         (Ebinop Oadd (Etempvar _pc tint)
-                           (Etempvar _ofs tint) tint) :: nil))
+                         (Ebinop Oadd (Etempvar _pc tuint)
+                           (Etempvar _ofs tuint) tuint) :: nil))
                       (Sreturn None))
                     (Sreturn None))
                   (LScons (Some 80)
@@ -1796,11 +1881,11 @@ Definition f_step_opcode_branch := {|
                           (Evar _upd_pc (Tfunction
                                           (Tcons
                                             (tptr (Tstruct _bpf_state noattr))
-                                            (Tcons tint Tnil)) tvoid
+                                            (Tcons tuint Tnil)) tvoid
                                           cc_default))
                           ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                           (Ebinop Oadd (Etempvar _pc tint)
-                             (Etempvar _ofs tint) tint) :: nil))
+                           (Ebinop Oadd (Etempvar _pc tuint)
+                             (Etempvar _ofs tuint) tuint) :: nil))
                         (Sreturn None))
                       (Sreturn None))
                     (LScons (Some 96)
@@ -1813,11 +1898,11 @@ Definition f_step_opcode_branch := {|
                             (Evar _upd_pc (Tfunction
                                             (Tcons
                                               (tptr (Tstruct _bpf_state noattr))
-                                              (Tcons tint Tnil)) tvoid
+                                              (Tcons tuint Tnil)) tvoid
                                             cc_default))
                             ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                             (Ebinop Oadd (Etempvar _pc tint)
-                               (Etempvar _ofs tint) tint) :: nil))
+                             (Ebinop Oadd (Etempvar _pc tuint)
+                               (Etempvar _ofs tuint) tuint) :: nil))
                           (Sreturn None))
                         (Sreturn None))
                       (LScons (Some 112)
@@ -1830,11 +1915,11 @@ Definition f_step_opcode_branch := {|
                               (Evar _upd_pc (Tfunction
                                               (Tcons
                                                 (tptr (Tstruct _bpf_state noattr))
-                                                (Tcons tint Tnil)) tvoid
+                                                (Tcons tuint Tnil)) tvoid
                                               cc_default))
                               ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                               (Ebinop Oadd (Etempvar _pc tint)
-                                 (Etempvar _ofs tint) tint) :: nil))
+                               (Ebinop Oadd (Etempvar _pc tuint)
+                                 (Etempvar _ofs tuint) tuint) :: nil))
                             (Sreturn None))
                           (Sreturn None))
                         (LScons (Some 192)
@@ -1848,11 +1933,11 @@ Definition f_step_opcode_branch := {|
                                 (Evar _upd_pc (Tfunction
                                                 (Tcons
                                                   (tptr (Tstruct _bpf_state noattr))
-                                                  (Tcons tint Tnil)) tvoid
+                                                  (Tcons tuint Tnil)) tvoid
                                                 cc_default))
                                 ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                 (Ebinop Oadd (Etempvar _pc tint)
-                                   (Etempvar _ofs tint) tint) :: nil))
+                                 (Ebinop Oadd (Etempvar _pc tuint)
+                                   (Etempvar _ofs tuint) tuint) :: nil))
                               (Sreturn None))
                             (Sreturn None))
                           (LScons (Some 208)
@@ -1866,27 +1951,87 @@ Definition f_step_opcode_branch := {|
                                   (Evar _upd_pc (Tfunction
                                                   (Tcons
                                                     (tptr (Tstruct _bpf_state noattr))
-                                                    (Tcons tint Tnil)) tvoid
+                                                    (Tcons tuint Tnil)) tvoid
                                                   cc_default))
                                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                   (Ebinop Oadd (Etempvar _pc tint)
-                                     (Etempvar _ofs tint) tint) :: nil))
+                                   (Ebinop Oadd (Etempvar _pc tuint)
+                                     (Etempvar _ofs tuint) tuint) :: nil))
                                 (Sreturn None))
                               (Sreturn None))
-                            (LScons (Some 144)
+                            (LScons (Some 128)
                               (Sifthenelse (Ebinop Oeq (Etempvar _op tuchar)
-                                             (Econst_int (Int.repr 149) tint)
+                                             (Econst_int (Int.repr 133) tint)
                                              tint)
                                 (Ssequence
-                                  (Scall None
-                                    (Evar _upd_flag (Tfunction
-                                                      (Tcons
-                                                        (tptr (Tstruct _bpf_state noattr))
-                                                        (Tcons tint Tnil))
-                                                      tvoid cc_default))
-                                    ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                     (Econst_int (Int.repr 1) tint) :: nil))
-                                  (Sreturn None))
+                                  (Ssequence
+                                    (Scall (Some _t'2)
+                                      (Evar __bpf_get_call (Tfunction
+                                                             (Tcons tint
+                                                               Tnil)
+                                                             (tptr tuchar)
+                                                             cc_default))
+                                      ((Ecast (Etempvar _src64 tulong) tint) ::
+                                       nil))
+                                    (Sset _f_ptr
+                                      (Etempvar _t'2 (tptr tuchar))))
+                                  (Ssequence
+                                    (Ssequence
+                                      (Scall (Some _t'3)
+                                        (Evar _cmp_ptr32_nullM (Tfunction
+                                                                 (Tcons
+                                                                   (tptr tuchar)
+                                                                   Tnil)
+                                                                 tbool
+                                                                 cc_default))
+                                        ((Etempvar _f_ptr (tptr tuchar)) ::
+                                         nil))
+                                      (Sset _is_null
+                                        (Ecast (Etempvar _t'3 tbool) tbool)))
+                                    (Sifthenelse (Etempvar _is_null tbool)
+                                      (Ssequence
+                                        (Scall None
+                                          (Evar _upd_flag (Tfunction
+                                                            (Tcons
+                                                              (tptr (Tstruct _bpf_state noattr))
+                                                              (Tcons tint
+                                                                Tnil)) tvoid
+                                                            cc_default))
+                                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                           (Eunop Oneg
+                                             (Econst_int (Int.repr 4) tint)
+                                             tint) :: nil))
+                                        (Sreturn None))
+                                      (Ssequence
+                                        (Ssequence
+                                          (Scall (Some _t'4)
+                                            (Evar _exec_function (Tfunction
+                                                                   (Tcons
+                                                                    (tptr (Tstruct _bpf_state noattr))
+                                                                    (Tcons
+                                                                    (tptr tuchar)
+                                                                    Tnil))
+                                                                   tuint
+                                                                   cc_default))
+                                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                             (Etempvar _f_ptr (tptr tuchar)) ::
+                                             nil))
+                                          (Sset _res (Etempvar _t'4 tuint)))
+                                        (Ssequence
+                                          (Scall None
+                                            (Evar _upd_reg (Tfunction
+                                                             (Tcons
+                                                               (tptr (Tstruct _bpf_state noattr))
+                                                               (Tcons tuint
+                                                                 (Tcons
+                                                                   tulong
+                                                                   Tnil)))
+                                                             tvoid
+                                                             cc_default))
+                                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                             (Econst_int (Int.repr 0) tuint) ::
+                                             (Ecast (Etempvar _res tuint)
+                                               tulong) :: nil))
+                                          (Sreturn None))))))
                                 (Ssequence
                                   (Scall None
                                     (Evar _upd_flag (Tfunction
@@ -1899,99 +2044,89 @@ Definition f_step_opcode_branch := {|
                                        (Econst_int (Int.repr 1) tint) tint) ::
                                      nil))
                                   (Sreturn None)))
-                              (LScons None
-                                (Ssequence
-                                  (Scall None
-                                    (Evar _upd_flag (Tfunction
-                                                      (Tcons
-                                                        (tptr (Tstruct _bpf_state noattr))
-                                                        (Tcons tint Tnil))
-                                                      tvoid cc_default))
-                                    ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                     (Eunop Oneg
-                                       (Econst_int (Int.repr 1) tint) tint) ::
-                                     nil))
-                                  (Sreturn None))
-                                LSnil))))))))))))))))
+                              (LScons (Some 144)
+                                (Sifthenelse (Ebinop Oeq
+                                               (Etempvar _op tuchar)
+                                               (Econst_int (Int.repr 149) tint)
+                                               tint)
+                                  (Ssequence
+                                    (Scall None
+                                      (Evar _upd_flag (Tfunction
+                                                        (Tcons
+                                                          (tptr (Tstruct _bpf_state noattr))
+                                                          (Tcons tint Tnil))
+                                                        tvoid cc_default))
+                                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                       (Econst_int (Int.repr 1) tint) :: nil))
+                                    (Sreturn None))
+                                  (Ssequence
+                                    (Scall None
+                                      (Evar _upd_flag (Tfunction
+                                                        (Tcons
+                                                          (tptr (Tstruct _bpf_state noattr))
+                                                          (Tcons tint Tnil))
+                                                        tvoid cc_default))
+                                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                       (Eunop Oneg
+                                         (Econst_int (Int.repr 1) tint) tint) ::
+                                       nil))
+                                    (Sreturn None)))
+                                (LScons None
+                                  (Ssequence
+                                    (Scall None
+                                      (Evar _upd_flag (Tfunction
+                                                        (Tcons
+                                                          (tptr (Tstruct _bpf_state noattr))
+                                                          (Tcons tint Tnil))
+                                                        tvoid cc_default))
+                                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                       (Eunop Oneg
+                                         (Econst_int (Int.repr 1) tint) tint) ::
+                                       nil))
+                                    (Sreturn None))
+                                  LSnil)))))))))))))))))
 |}.
 
 Definition f_step_opcode_mem_ld_imm := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_imm, tint) ::
-                (_pc, tint) :: (_dst, tuint) :: (_op, tuchar) :: nil);
+                (_dst64, tulong) :: (_dst, tuint) :: (_op, tuchar) :: nil);
   fn_vars := nil;
-  fn_temps := ((_len, tint) :: (_opcode_ld, tuchar) :: (_next_ins, tulong) ::
-               (_next_imm, tint) :: (_t'4, tint) :: (_t'3, tulong) ::
-               (_t'2, tuchar) :: (_t'1, tint) :: nil);
+  fn_temps := ((_opcode_ld, tuchar) :: (_t'1, tuchar) :: nil);
   fn_body :=
 (Ssequence
   (Ssequence
     (Scall (Some _t'1)
-      (Evar _eval_ins_len (Tfunction
-                            (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil)
-                            tint cc_default))
-      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
-    (Sset _len (Etempvar _t'1 tint)))
-  (Ssequence
-    (Ssequence
-      (Scall (Some _t'2)
-        (Evar _get_opcode_mem_ld_imm (Tfunction (Tcons tuchar Tnil) tuchar
-                                       cc_default))
-        ((Etempvar _op tuchar) :: nil))
-      (Sset _opcode_ld (Ecast (Etempvar _t'2 tuchar) tuchar)))
-    (Sswitch (Etempvar _opcode_ld tuchar)
-      (LScons (Some 24)
-        (Sifthenelse (Ebinop Olt
-                       (Ebinop Oadd (Etempvar _pc tint)
-                         (Econst_int (Int.repr 1) tint) tint)
-                       (Etempvar _len tint) tint)
-          (Ssequence
-            (Ssequence
-              (Scall (Some _t'3)
-                (Evar _eval_ins (Tfunction
-                                  (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tint Tnil)) tulong cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Ebinop Oadd (Etempvar _pc tint)
-                   (Econst_int (Int.repr 1) tint) tint) :: nil))
-              (Sset _next_ins (Etempvar _t'3 tulong)))
-            (Ssequence
-              (Ssequence
-                (Scall (Some _t'4)
-                  (Evar _get_immediate (Tfunction (Tcons tulong Tnil) tint
-                                         cc_default))
-                  ((Etempvar _next_ins tulong) :: nil))
-                (Sset _next_imm (Etempvar _t'4 tint)))
-              (Ssequence
-                (Scall None
-                  (Evar _upd_reg (Tfunction
-                                   (Tcons (tptr (Tstruct _bpf_state noattr))
-                                     (Tcons tuint (Tcons tulong Tnil))) tvoid
-                                   cc_default))
-                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Etempvar _dst tuint) ::
-                   (Ebinop Oor (Ecast (Etempvar _imm tint) tulong)
-                     (Ebinop Oshl (Ecast (Etempvar _next_imm tint) tulong)
-                       (Econst_int (Int.repr 32) tuint) tulong) tulong) ::
-                   nil))
-                (Ssequence
-                  (Scall None
-                    (Evar _upd_pc_incr (Tfunction
-                                         (Tcons
-                                           (tptr (Tstruct _bpf_state noattr))
-                                           Tnil) tvoid cc_default))
-                    ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     nil))
-                  (Sreturn None)))))
-          (Ssequence
-            (Scall None
-              (Evar _upd_flag (Tfunction
-                                (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tint Tnil)) tvoid cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Eunop Oneg (Econst_int (Int.repr 5) tint) tint) :: nil))
-            (Sreturn None)))
+      (Evar _get_opcode_mem_ld_imm (Tfunction (Tcons tuchar Tnil) tuchar
+                                     cc_default))
+      ((Etempvar _op tuchar) :: nil))
+    (Sset _opcode_ld (Ecast (Etempvar _t'1 tuchar) tuchar)))
+  (Sswitch (Etempvar _opcode_ld tuchar)
+    (LScons (Some 24)
+      (Ssequence
+        (Scall None
+          (Evar _upd_reg (Tfunction
+                           (Tcons (tptr (Tstruct _bpf_state noattr))
+                             (Tcons tuint (Tcons tulong Tnil))) tvoid
+                           cc_default))
+          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+           (Etempvar _dst tuint) ::
+           (Ecast (Ecast (Etempvar _imm tint) tuint) tulong) :: nil))
+        (Sreturn None))
+      (LScons (Some 16)
+        (Ssequence
+          (Scall None
+            (Evar _upd_reg (Tfunction
+                             (Tcons (tptr (Tstruct _bpf_state noattr))
+                               (Tcons tuint (Tcons tulong Tnil))) tvoid
+                             cc_default))
+            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+             (Etempvar _dst tuint) ::
+             (Ebinop Oor (Etempvar _dst64 tulong)
+               (Ebinop Oshl (Ecast (Ecast (Etempvar _imm tint) tuint) tulong)
+                 (Econst_int (Int.repr 32) tuint) tulong) tulong) :: nil))
+          (Sreturn None))
         (LScons None
           (Ssequence
             (Scall None
@@ -2008,14 +2143,15 @@ Definition f_step_opcode_mem_ld_reg := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
-                (_addr, tuint) :: (_pc, tint) :: (_dst, tuint) ::
-                (_op, tuchar) :: nil);
+                (_addr, tuint) :: (_dst, tuint) :: (_op, tuchar) :: nil);
   fn_vars := nil;
   fn_temps := ((_opcode_ld, tuchar) :: (_addr_ptr, (tptr tuchar)) ::
-               (_v, tulong) :: (_t'9, tulong) :: (_t'8, (tptr tuchar)) ::
-               (_t'7, tulong) :: (_t'6, (tptr tuchar)) :: (_t'5, tulong) ::
-               (_t'4, (tptr tuchar)) :: (_t'3, tulong) ::
-               (_t'2, (tptr tuchar)) :: (_t'1, tuchar) :: nil);
+               (_is_null, tbool) :: (_v, tulong) :: (_t'13, tulong) ::
+               (_t'12, tbool) :: (_t'11, (tptr tuchar)) :: (_t'10, tulong) ::
+               (_t'9, tbool) :: (_t'8, (tptr tuchar)) :: (_t'7, tulong) ::
+               (_t'6, tbool) :: (_t'5, (tptr tuchar)) :: (_t'4, tulong) ::
+               (_t'3, tbool) :: (_t'2, (tptr tuchar)) :: (_t'1, tuchar) ::
+               nil);
   fn_body :=
 (Ssequence
   (Ssequence
@@ -2039,54 +2175,14 @@ Definition f_step_opcode_mem_ld_reg := {|
              (Econst_int (Int.repr 4) tuint) :: (Etempvar _addr tuint) ::
              nil))
           (Sset _addr_ptr (Etempvar _t'2 (tptr tuchar))))
-        (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                       (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                       tint)
-          (Ssequence
-            (Scall None
-              (Evar _upd_flag (Tfunction
-                                (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tint Tnil)) tvoid cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) :: nil))
-            (Sreturn None))
-          (Ssequence
-            (Ssequence
-              (Scall (Some _t'3)
-                (Evar _load_mem (Tfunction
-                                  (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tuint (Tcons (tptr tuchar) Tnil)))
-                                  tulong cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 4) tuint) ::
-                 (Etempvar _addr_ptr (tptr tuchar)) :: nil))
-              (Sset _v (Etempvar _t'3 tulong)))
-            (Ssequence
-              (Scall None
-                (Evar _upd_reg (Tfunction
-                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                   (Tcons tuint (Tcons tulong Tnil))) tvoid
-                                 cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Etempvar _dst tuint) :: (Etempvar _v tulong) :: nil))
-              (Sreturn None)))))
-      (LScons (Some 105)
         (Ssequence
           (Ssequence
-            (Scall (Some _t'4)
-              (Evar _check_mem (Tfunction
-                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                   (Tcons tuint
-                                     (Tcons tuint (Tcons tuint Tnil))))
-                                 (tptr tuchar) cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Econst_int (Int.repr 1) tuint) ::
-               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
-               nil))
-            (Sset _addr_ptr (Etempvar _t'4 (tptr tuchar))))
-          (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                         (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                         tint)
+            (Scall (Some _t'3)
+              (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                       tbool cc_default))
+              ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+            (Sset _is_null (Ecast (Etempvar _t'3 tbool) tbool)))
+          (Sifthenelse (Etempvar _is_null tbool)
             (Ssequence
               (Scall None
                 (Evar _upd_flag (Tfunction
@@ -2097,16 +2193,16 @@ Definition f_step_opcode_mem_ld_reg := {|
               (Sreturn None))
             (Ssequence
               (Ssequence
-                (Scall (Some _t'5)
+                (Scall (Some _t'4)
                   (Evar _load_mem (Tfunction
                                     (Tcons (tptr (Tstruct _bpf_state noattr))
                                       (Tcons tuint
                                         (Tcons (tptr tuchar) Tnil))) tulong
                                     cc_default))
                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 2) tuint) ::
+                   (Econst_int (Int.repr 4) tuint) ::
                    (Etempvar _addr_ptr (tptr tuchar)) :: nil))
-                (Sset _v (Etempvar _t'5 tulong)))
+                (Sset _v (Etempvar _t'4 tulong)))
               (Ssequence
                 (Scall None
                   (Evar _upd_reg (Tfunction
@@ -2115,24 +2211,29 @@ Definition f_step_opcode_mem_ld_reg := {|
                                    cc_default))
                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                    (Etempvar _dst tuint) :: (Etempvar _v tulong) :: nil))
-                (Sreturn None)))))
-        (LScons (Some 113)
+                (Sreturn None))))))
+      (LScons (Some 105)
+        (Ssequence
+          (Ssequence
+            (Scall (Some _t'5)
+              (Evar _check_mem (Tfunction
+                                 (Tcons (tptr (Tstruct _bpf_state noattr))
+                                   (Tcons tuint
+                                     (Tcons tuint (Tcons tuint Tnil))))
+                                 (tptr tuchar) cc_default))
+              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+               (Econst_int (Int.repr 1) tuint) ::
+               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
+               nil))
+            (Sset _addr_ptr (Etempvar _t'5 (tptr tuchar))))
           (Ssequence
             (Ssequence
               (Scall (Some _t'6)
-                (Evar _check_mem (Tfunction
-                                   (Tcons (tptr (Tstruct _bpf_state noattr))
-                                     (Tcons tuint
-                                       (Tcons tuint (Tcons tuint Tnil))))
-                                   (tptr tuchar) cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 1) tuint) ::
-                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
-                 nil))
-              (Sset _addr_ptr (Etempvar _t'6 (tptr tuchar))))
-            (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                           (Ecast (Econst_int (Int.repr 0) tint)
-                             (tptr tvoid)) tint)
+                (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                         tbool cc_default))
+                ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+              (Sset _is_null (Ecast (Etempvar _t'6 tbool) tbool)))
+            (Sifthenelse (Etempvar _is_null tbool)
               (Ssequence
                 (Scall None
                   (Evar _upd_flag (Tfunction
@@ -2151,7 +2252,7 @@ Definition f_step_opcode_mem_ld_reg := {|
                                           (Tcons (tptr tuchar) Tnil))) tulong
                                       cc_default))
                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     (Econst_int (Int.repr 1) tuint) ::
+                     (Econst_int (Int.repr 2) tuint) ::
                      (Etempvar _addr_ptr (tptr tuchar)) :: nil))
                   (Sset _v (Etempvar _t'7 tulong)))
                 (Ssequence
@@ -2163,25 +2264,30 @@ Definition f_step_opcode_mem_ld_reg := {|
                                      tvoid cc_default))
                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                      (Etempvar _dst tuint) :: (Etempvar _v tulong) :: nil))
-                  (Sreturn None)))))
-          (LScons (Some 121)
+                  (Sreturn None))))))
+        (LScons (Some 113)
+          (Ssequence
+            (Ssequence
+              (Scall (Some _t'8)
+                (Evar _check_mem (Tfunction
+                                   (Tcons (tptr (Tstruct _bpf_state noattr))
+                                     (Tcons tuint
+                                       (Tcons tuint (Tcons tuint Tnil))))
+                                   (tptr tuchar) cc_default))
+                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                 (Econst_int (Int.repr 1) tuint) ::
+                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
+                 nil))
+              (Sset _addr_ptr (Etempvar _t'8 (tptr tuchar))))
             (Ssequence
               (Ssequence
-                (Scall (Some _t'8)
-                  (Evar _check_mem (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
-                                         (Tcons tuint (Tcons tuint Tnil))))
-                                     (tptr tuchar) cc_default))
-                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 1) tuint) ::
-                   (Econst_int (Int.repr 8) tuint) ::
-                   (Etempvar _addr tuint) :: nil))
-                (Sset _addr_ptr (Etempvar _t'8 (tptr tuchar))))
-              (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                             (Ecast (Econst_int (Int.repr 0) tint)
-                               (tptr tvoid)) tint)
+                (Scall (Some _t'9)
+                  (Evar _cmp_ptr32_nullM (Tfunction
+                                           (Tcons (tptr tuchar) Tnil) tbool
+                                           cc_default))
+                  ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                (Sset _is_null (Ecast (Etempvar _t'9 tbool) tbool)))
+              (Sifthenelse (Etempvar _is_null tbool)
                 (Ssequence
                   (Scall None
                     (Evar _upd_flag (Tfunction
@@ -2193,7 +2299,7 @@ Definition f_step_opcode_mem_ld_reg := {|
                   (Sreturn None))
                 (Ssequence
                   (Ssequence
-                    (Scall (Some _t'9)
+                    (Scall (Some _t'10)
                       (Evar _load_mem (Tfunction
                                         (Tcons
                                           (tptr (Tstruct _bpf_state noattr))
@@ -2201,9 +2307,9 @@ Definition f_step_opcode_mem_ld_reg := {|
                                             (Tcons (tptr tuchar) Tnil)))
                                         tulong cc_default))
                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                       (Econst_int (Int.repr 8) tuint) ::
+                       (Econst_int (Int.repr 1) tuint) ::
                        (Etempvar _addr_ptr (tptr tuchar)) :: nil))
-                    (Sset _v (Etempvar _t'9 tulong)))
+                    (Sset _v (Etempvar _t'10 tulong)))
                   (Ssequence
                     (Scall None
                       (Evar _upd_reg (Tfunction
@@ -2213,7 +2319,66 @@ Definition f_step_opcode_mem_ld_reg := {|
                                        tvoid cc_default))
                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                        (Etempvar _dst tuint) :: (Etempvar _v tulong) :: nil))
-                    (Sreturn None)))))
+                    (Sreturn None))))))
+          (LScons (Some 121)
+            (Ssequence
+              (Ssequence
+                (Scall (Some _t'11)
+                  (Evar _check_mem (Tfunction
+                                     (Tcons
+                                       (tptr (Tstruct _bpf_state noattr))
+                                       (Tcons tuint
+                                         (Tcons tuint (Tcons tuint Tnil))))
+                                     (tptr tuchar) cc_default))
+                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                   (Econst_int (Int.repr 1) tuint) ::
+                   (Econst_int (Int.repr 8) tuint) ::
+                   (Etempvar _addr tuint) :: nil))
+                (Sset _addr_ptr (Etempvar _t'11 (tptr tuchar))))
+              (Ssequence
+                (Ssequence
+                  (Scall (Some _t'12)
+                    (Evar _cmp_ptr32_nullM (Tfunction
+                                             (Tcons (tptr tuchar) Tnil) tbool
+                                             cc_default))
+                    ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                  (Sset _is_null (Ecast (Etempvar _t'12 tbool) tbool)))
+                (Sifthenelse (Etempvar _is_null tbool)
+                  (Ssequence
+                    (Scall None
+                      (Evar _upd_flag (Tfunction
+                                        (Tcons
+                                          (tptr (Tstruct _bpf_state noattr))
+                                          (Tcons tint Tnil)) tvoid
+                                        cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) ::
+                       nil))
+                    (Sreturn None))
+                  (Ssequence
+                    (Ssequence
+                      (Scall (Some _t'13)
+                        (Evar _load_mem (Tfunction
+                                          (Tcons
+                                            (tptr (Tstruct _bpf_state noattr))
+                                            (Tcons tuint
+                                              (Tcons (tptr tuchar) Tnil)))
+                                          tulong cc_default))
+                        ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                         (Econst_int (Int.repr 8) tuint) ::
+                         (Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                      (Sset _v (Etempvar _t'13 tulong)))
+                    (Ssequence
+                      (Scall None
+                        (Evar _upd_reg (Tfunction
+                                         (Tcons
+                                           (tptr (Tstruct _bpf_state noattr))
+                                           (Tcons tuint (Tcons tulong Tnil)))
+                                         tvoid cc_default))
+                        ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                         (Etempvar _dst tuint) :: (Etempvar _v tulong) ::
+                         nil))
+                      (Sreturn None))))))
             (LScons None
               (Ssequence
                 (Scall None
@@ -2230,13 +2395,13 @@ Definition f_step_opcode_mem_st_imm := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: (_imm, tint) ::
-                (_addr, tuint) :: (_pc, tint) :: (_dst, tuint) ::
-                (_op, tuchar) :: nil);
+                (_addr, tuint) :: (_dst, tuint) :: (_op, tuchar) :: nil);
   fn_vars := nil;
   fn_temps := ((_opcode_st, tuchar) :: (_addr_ptr, (tptr tuchar)) ::
-               (_t'5, (tptr tuchar)) :: (_t'4, (tptr tuchar)) ::
-               (_t'3, (tptr tuchar)) :: (_t'2, (tptr tuchar)) ::
-               (_t'1, tuchar) :: nil);
+               (_is_null, tbool) :: (_t'9, tbool) :: (_t'8, (tptr tuchar)) ::
+               (_t'7, tbool) :: (_t'6, (tptr tuchar)) :: (_t'5, tbool) ::
+               (_t'4, (tptr tuchar)) :: (_t'3, tbool) ::
+               (_t'2, (tptr tuchar)) :: (_t'1, tuchar) :: nil);
   fn_body :=
 (Ssequence
   (Ssequence
@@ -2260,48 +2425,14 @@ Definition f_step_opcode_mem_st_imm := {|
              (Econst_int (Int.repr 4) tuint) :: (Etempvar _addr tuint) ::
              nil))
           (Sset _addr_ptr (Etempvar _t'2 (tptr tuchar))))
-        (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                       (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                       tint)
-          (Ssequence
-            (Scall None
-              (Evar _upd_flag (Tfunction
-                                (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tint Tnil)) tvoid cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) :: nil))
-            (Sreturn None))
-          (Ssequence
-            (Scall None
-              (Evar _store_mem_imm (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
-                                         (Tcons (tptr tuchar)
-                                           (Tcons tint Tnil)))) tvoid
-                                     cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Econst_int (Int.repr 4) tuint) ::
-               (Etempvar _addr_ptr (tptr tuchar)) :: (Etempvar _imm tint) ::
-               nil))
-            (Sreturn None))))
-      (LScons (Some 106)
         (Ssequence
           (Ssequence
             (Scall (Some _t'3)
-              (Evar _check_mem (Tfunction
-                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                   (Tcons tuint
-                                     (Tcons tuint (Tcons tuint Tnil))))
-                                 (tptr tuchar) cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Econst_int (Int.repr 2) tuint) ::
-               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
-               nil))
-            (Sset _addr_ptr (Etempvar _t'3 (tptr tuchar))))
-          (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                         (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                         tint)
+              (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                       tbool cc_default))
+              ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+            (Sset _is_null (Ecast (Etempvar _t'3 tbool) tbool)))
+          (Sifthenelse (Etempvar _is_null tbool)
             (Ssequence
               (Scall None
                 (Evar _upd_flag (Tfunction
@@ -2315,32 +2446,36 @@ Definition f_step_opcode_mem_st_imm := {|
                 (Evar _store_mem_imm (Tfunction
                                        (Tcons
                                          (tptr (Tstruct _bpf_state noattr))
-                                         (Tcons tuint
-                                           (Tcons (tptr tuchar)
-                                             (Tcons tint Tnil)))) tvoid
-                                       cc_default))
+                                         (Tcons (tptr tuchar)
+                                           (Tcons tuint (Tcons tint Tnil))))
+                                       tvoid cc_default))
                 ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 2) tuint) ::
                  (Etempvar _addr_ptr (tptr tuchar)) ::
-                 (Etempvar _imm tint) :: nil))
-              (Sreturn None))))
-        (LScons (Some 114)
+                 (Econst_int (Int.repr 4) tuint) :: (Etempvar _imm tint) ::
+                 nil))
+              (Sreturn None)))))
+      (LScons (Some 106)
+        (Ssequence
+          (Ssequence
+            (Scall (Some _t'4)
+              (Evar _check_mem (Tfunction
+                                 (Tcons (tptr (Tstruct _bpf_state noattr))
+                                   (Tcons tuint
+                                     (Tcons tuint (Tcons tuint Tnil))))
+                                 (tptr tuchar) cc_default))
+              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+               (Econst_int (Int.repr 2) tuint) ::
+               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
+               nil))
+            (Sset _addr_ptr (Etempvar _t'4 (tptr tuchar))))
           (Ssequence
             (Ssequence
-              (Scall (Some _t'4)
-                (Evar _check_mem (Tfunction
-                                   (Tcons (tptr (Tstruct _bpf_state noattr))
-                                     (Tcons tuint
-                                       (Tcons tuint (Tcons tuint Tnil))))
-                                   (tptr tuchar) cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 2) tuint) ::
-                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
-                 nil))
-              (Sset _addr_ptr (Etempvar _t'4 (tptr tuchar))))
-            (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                           (Ecast (Econst_int (Int.repr 0) tint)
-                             (tptr tvoid)) tint)
+              (Scall (Some _t'5)
+                (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                         tbool cc_default))
+                ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+              (Sset _is_null (Ecast (Etempvar _t'5 tbool) tbool)))
+            (Sifthenelse (Etempvar _is_null tbool)
               (Ssequence
                 (Scall None
                   (Evar _upd_flag (Tfunction
@@ -2354,33 +2489,37 @@ Definition f_step_opcode_mem_st_imm := {|
                   (Evar _store_mem_imm (Tfunction
                                          (Tcons
                                            (tptr (Tstruct _bpf_state noattr))
-                                           (Tcons tuint
-                                             (Tcons (tptr tuchar)
-                                               (Tcons tint Tnil)))) tvoid
-                                         cc_default))
+                                           (Tcons (tptr tuchar)
+                                             (Tcons tuint (Tcons tint Tnil))))
+                                         tvoid cc_default))
                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 1) tuint) ::
                    (Etempvar _addr_ptr (tptr tuchar)) ::
-                   (Etempvar _imm tint) :: nil))
-                (Sreturn None))))
-          (LScons (Some 122)
+                   (Econst_int (Int.repr 2) tuint) :: (Etempvar _imm tint) ::
+                   nil))
+                (Sreturn None)))))
+        (LScons (Some 114)
+          (Ssequence
+            (Ssequence
+              (Scall (Some _t'6)
+                (Evar _check_mem (Tfunction
+                                   (Tcons (tptr (Tstruct _bpf_state noattr))
+                                     (Tcons tuint
+                                       (Tcons tuint (Tcons tuint Tnil))))
+                                   (tptr tuchar) cc_default))
+                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                 (Econst_int (Int.repr 2) tuint) ::
+                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
+                 nil))
+              (Sset _addr_ptr (Etempvar _t'6 (tptr tuchar))))
             (Ssequence
               (Ssequence
-                (Scall (Some _t'5)
-                  (Evar _check_mem (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
-                                         (Tcons tuint (Tcons tuint Tnil))))
-                                     (tptr tuchar) cc_default))
-                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 2) tuint) ::
-                   (Econst_int (Int.repr 8) tuint) ::
-                   (Etempvar _addr tuint) :: nil))
-                (Sset _addr_ptr (Etempvar _t'5 (tptr tuchar))))
-              (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                             (Ecast (Econst_int (Int.repr 0) tint)
-                               (tptr tvoid)) tint)
+                (Scall (Some _t'7)
+                  (Evar _cmp_ptr32_nullM (Tfunction
+                                           (Tcons (tptr tuchar) Tnil) tbool
+                                           cc_default))
+                  ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                (Sset _is_null (Ecast (Etempvar _t'7 tbool) tbool)))
+              (Sifthenelse (Etempvar _is_null tbool)
                 (Ssequence
                   (Scall None
                     (Evar _upd_flag (Tfunction
@@ -2395,15 +2534,64 @@ Definition f_step_opcode_mem_st_imm := {|
                     (Evar _store_mem_imm (Tfunction
                                            (Tcons
                                              (tptr (Tstruct _bpf_state noattr))
-                                             (Tcons tuint
-                                               (Tcons (tptr tuchar)
+                                             (Tcons (tptr tuchar)
+                                               (Tcons tuint
                                                  (Tcons tint Tnil)))) tvoid
                                            cc_default))
                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     (Econst_int (Int.repr 8) tuint) ::
                      (Etempvar _addr_ptr (tptr tuchar)) ::
+                     (Econst_int (Int.repr 1) tuint) ::
                      (Etempvar _imm tint) :: nil))
-                  (Sreturn None))))
+                  (Sreturn None)))))
+          (LScons (Some 122)
+            (Ssequence
+              (Ssequence
+                (Scall (Some _t'8)
+                  (Evar _check_mem (Tfunction
+                                     (Tcons
+                                       (tptr (Tstruct _bpf_state noattr))
+                                       (Tcons tuint
+                                         (Tcons tuint (Tcons tuint Tnil))))
+                                     (tptr tuchar) cc_default))
+                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                   (Econst_int (Int.repr 2) tuint) ::
+                   (Econst_int (Int.repr 8) tuint) ::
+                   (Etempvar _addr tuint) :: nil))
+                (Sset _addr_ptr (Etempvar _t'8 (tptr tuchar))))
+              (Ssequence
+                (Ssequence
+                  (Scall (Some _t'9)
+                    (Evar _cmp_ptr32_nullM (Tfunction
+                                             (Tcons (tptr tuchar) Tnil) tbool
+                                             cc_default))
+                    ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                  (Sset _is_null (Ecast (Etempvar _t'9 tbool) tbool)))
+                (Sifthenelse (Etempvar _is_null tbool)
+                  (Ssequence
+                    (Scall None
+                      (Evar _upd_flag (Tfunction
+                                        (Tcons
+                                          (tptr (Tstruct _bpf_state noattr))
+                                          (Tcons tint Tnil)) tvoid
+                                        cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) ::
+                       nil))
+                    (Sreturn None))
+                  (Ssequence
+                    (Scall None
+                      (Evar _store_mem_imm (Tfunction
+                                             (Tcons
+                                               (tptr (Tstruct _bpf_state noattr))
+                                               (Tcons (tptr tuchar)
+                                                 (Tcons tuint
+                                                   (Tcons tint Tnil)))) tvoid
+                                             cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Etempvar _addr_ptr (tptr tuchar)) ::
+                       (Econst_int (Int.repr 8) tuint) ::
+                       (Etempvar _imm tint) :: nil))
+                    (Sreturn None)))))
             (LScons None
               (Ssequence
                 (Scall None
@@ -2420,13 +2608,14 @@ Definition f_step_opcode_mem_st_reg := {|
   fn_return := tvoid;
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
-                (_src64, tulong) :: (_addr, tuint) :: (_pc, tint) ::
-                (_dst, tuint) :: (_op, tuchar) :: nil);
+                (_src64, tulong) :: (_addr, tuint) :: (_dst, tuint) ::
+                (_op, tuchar) :: nil);
   fn_vars := nil;
   fn_temps := ((_opcode_st, tuchar) :: (_addr_ptr, (tptr tuchar)) ::
-               (_t'5, (tptr tuchar)) :: (_t'4, (tptr tuchar)) ::
-               (_t'3, (tptr tuchar)) :: (_t'2, (tptr tuchar)) ::
-               (_t'1, tuchar) :: nil);
+               (_is_null, tbool) :: (_t'9, tbool) :: (_t'8, (tptr tuchar)) ::
+               (_t'7, tbool) :: (_t'6, (tptr tuchar)) :: (_t'5, tbool) ::
+               (_t'4, (tptr tuchar)) :: (_t'3, tbool) ::
+               (_t'2, (tptr tuchar)) :: (_t'1, tuchar) :: nil);
   fn_body :=
 (Ssequence
   (Ssequence
@@ -2450,48 +2639,14 @@ Definition f_step_opcode_mem_st_reg := {|
              (Econst_int (Int.repr 4) tuint) :: (Etempvar _addr tuint) ::
              nil))
           (Sset _addr_ptr (Etempvar _t'2 (tptr tuchar))))
-        (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                       (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                       tint)
-          (Ssequence
-            (Scall None
-              (Evar _upd_flag (Tfunction
-                                (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tint Tnil)) tvoid cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) :: nil))
-            (Sreturn None))
-          (Ssequence
-            (Scall None
-              (Evar _store_mem_reg (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
-                                         (Tcons (tptr tuchar)
-                                           (Tcons tulong Tnil)))) tvoid
-                                     cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Econst_int (Int.repr 4) tuint) ::
-               (Etempvar _addr_ptr (tptr tuchar)) ::
-               (Etempvar _src64 tulong) :: nil))
-            (Sreturn None))))
-      (LScons (Some 107)
         (Ssequence
           (Ssequence
             (Scall (Some _t'3)
-              (Evar _check_mem (Tfunction
-                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                   (Tcons tuint
-                                     (Tcons tuint (Tcons tuint Tnil))))
-                                 (tptr tuchar) cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-               (Econst_int (Int.repr 2) tuint) ::
-               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
-               nil))
-            (Sset _addr_ptr (Etempvar _t'3 (tptr tuchar))))
-          (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                         (Ecast (Econst_int (Int.repr 0) tint) (tptr tvoid))
-                         tint)
+              (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                       tbool cc_default))
+              ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+            (Sset _is_null (Ecast (Etempvar _t'3 tbool) tbool)))
+          (Sifthenelse (Etempvar _is_null tbool)
             (Ssequence
               (Scall None
                 (Evar _upd_flag (Tfunction
@@ -2505,32 +2660,36 @@ Definition f_step_opcode_mem_st_reg := {|
                 (Evar _store_mem_reg (Tfunction
                                        (Tcons
                                          (tptr (Tstruct _bpf_state noattr))
-                                         (Tcons tuint
-                                           (Tcons (tptr tuchar)
-                                             (Tcons tulong Tnil)))) tvoid
-                                       cc_default))
+                                         (Tcons (tptr tuchar)
+                                           (Tcons tuint (Tcons tulong Tnil))))
+                                       tvoid cc_default))
                 ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 2) tuint) ::
                  (Etempvar _addr_ptr (tptr tuchar)) ::
+                 (Econst_int (Int.repr 4) tuint) ::
                  (Etempvar _src64 tulong) :: nil))
-              (Sreturn None))))
-        (LScons (Some 115)
+              (Sreturn None)))))
+      (LScons (Some 107)
+        (Ssequence
+          (Ssequence
+            (Scall (Some _t'4)
+              (Evar _check_mem (Tfunction
+                                 (Tcons (tptr (Tstruct _bpf_state noattr))
+                                   (Tcons tuint
+                                     (Tcons tuint (Tcons tuint Tnil))))
+                                 (tptr tuchar) cc_default))
+              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+               (Econst_int (Int.repr 2) tuint) ::
+               (Econst_int (Int.repr 2) tuint) :: (Etempvar _addr tuint) ::
+               nil))
+            (Sset _addr_ptr (Etempvar _t'4 (tptr tuchar))))
           (Ssequence
             (Ssequence
-              (Scall (Some _t'4)
-                (Evar _check_mem (Tfunction
-                                   (Tcons (tptr (Tstruct _bpf_state noattr))
-                                     (Tcons tuint
-                                       (Tcons tuint (Tcons tuint Tnil))))
-                                   (tptr tuchar) cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 2) tuint) ::
-                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
-                 nil))
-              (Sset _addr_ptr (Etempvar _t'4 (tptr tuchar))))
-            (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                           (Ecast (Econst_int (Int.repr 0) tint)
-                             (tptr tvoid)) tint)
+              (Scall (Some _t'5)
+                (Evar _cmp_ptr32_nullM (Tfunction (Tcons (tptr tuchar) Tnil)
+                                         tbool cc_default))
+                ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+              (Sset _is_null (Ecast (Etempvar _t'5 tbool) tbool)))
+            (Sifthenelse (Etempvar _is_null tbool)
               (Ssequence
                 (Scall None
                   (Evar _upd_flag (Tfunction
@@ -2544,33 +2703,38 @@ Definition f_step_opcode_mem_st_reg := {|
                   (Evar _store_mem_reg (Tfunction
                                          (Tcons
                                            (tptr (Tstruct _bpf_state noattr))
-                                           (Tcons tuint
-                                             (Tcons (tptr tuchar)
+                                           (Tcons (tptr tuchar)
+                                             (Tcons tuint
                                                (Tcons tulong Tnil)))) tvoid
                                          cc_default))
                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 1) tuint) ::
                    (Etempvar _addr_ptr (tptr tuchar)) ::
+                   (Econst_int (Int.repr 2) tuint) ::
                    (Etempvar _src64 tulong) :: nil))
-                (Sreturn None))))
-          (LScons (Some 123)
+                (Sreturn None)))))
+        (LScons (Some 115)
+          (Ssequence
+            (Ssequence
+              (Scall (Some _t'6)
+                (Evar _check_mem (Tfunction
+                                   (Tcons (tptr (Tstruct _bpf_state noattr))
+                                     (Tcons tuint
+                                       (Tcons tuint (Tcons tuint Tnil))))
+                                   (tptr tuchar) cc_default))
+                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                 (Econst_int (Int.repr 2) tuint) ::
+                 (Econst_int (Int.repr 1) tuint) :: (Etempvar _addr tuint) ::
+                 nil))
+              (Sset _addr_ptr (Etempvar _t'6 (tptr tuchar))))
             (Ssequence
               (Ssequence
-                (Scall (Some _t'5)
-                  (Evar _check_mem (Tfunction
-                                     (Tcons
-                                       (tptr (Tstruct _bpf_state noattr))
-                                       (Tcons tuint
-                                         (Tcons tuint (Tcons tuint Tnil))))
-                                     (tptr tuchar) cc_default))
-                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                   (Econst_int (Int.repr 2) tuint) ::
-                   (Econst_int (Int.repr 8) tuint) ::
-                   (Etempvar _addr tuint) :: nil))
-                (Sset _addr_ptr (Etempvar _t'5 (tptr tuchar))))
-              (Sifthenelse (Ebinop Oeq (Etempvar _addr_ptr (tptr tuchar))
-                             (Ecast (Econst_int (Int.repr 0) tint)
-                               (tptr tvoid)) tint)
+                (Scall (Some _t'7)
+                  (Evar _cmp_ptr32_nullM (Tfunction
+                                           (Tcons (tptr tuchar) Tnil) tbool
+                                           cc_default))
+                  ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                (Sset _is_null (Ecast (Etempvar _t'7 tbool) tbool)))
+              (Sifthenelse (Etempvar _is_null tbool)
                 (Ssequence
                   (Scall None
                     (Evar _upd_flag (Tfunction
@@ -2585,15 +2749,64 @@ Definition f_step_opcode_mem_st_reg := {|
                     (Evar _store_mem_reg (Tfunction
                                            (Tcons
                                              (tptr (Tstruct _bpf_state noattr))
-                                             (Tcons tuint
-                                               (Tcons (tptr tuchar)
+                                             (Tcons (tptr tuchar)
+                                               (Tcons tuint
                                                  (Tcons tulong Tnil)))) tvoid
                                            cc_default))
                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     (Econst_int (Int.repr 8) tuint) ::
                      (Etempvar _addr_ptr (tptr tuchar)) ::
+                     (Econst_int (Int.repr 1) tuint) ::
                      (Etempvar _src64 tulong) :: nil))
-                  (Sreturn None))))
+                  (Sreturn None)))))
+          (LScons (Some 123)
+            (Ssequence
+              (Ssequence
+                (Scall (Some _t'8)
+                  (Evar _check_mem (Tfunction
+                                     (Tcons
+                                       (tptr (Tstruct _bpf_state noattr))
+                                       (Tcons tuint
+                                         (Tcons tuint (Tcons tuint Tnil))))
+                                     (tptr tuchar) cc_default))
+                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                   (Econst_int (Int.repr 2) tuint) ::
+                   (Econst_int (Int.repr 8) tuint) ::
+                   (Etempvar _addr tuint) :: nil))
+                (Sset _addr_ptr (Etempvar _t'8 (tptr tuchar))))
+              (Ssequence
+                (Ssequence
+                  (Scall (Some _t'9)
+                    (Evar _cmp_ptr32_nullM (Tfunction
+                                             (Tcons (tptr tuchar) Tnil) tbool
+                                             cc_default))
+                    ((Etempvar _addr_ptr (tptr tuchar)) :: nil))
+                  (Sset _is_null (Ecast (Etempvar _t'9 tbool) tbool)))
+                (Sifthenelse (Etempvar _is_null tbool)
+                  (Ssequence
+                    (Scall None
+                      (Evar _upd_flag (Tfunction
+                                        (Tcons
+                                          (tptr (Tstruct _bpf_state noattr))
+                                          (Tcons tint Tnil)) tvoid
+                                        cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Eunop Oneg (Econst_int (Int.repr 2) tint) tint) ::
+                       nil))
+                    (Sreturn None))
+                  (Ssequence
+                    (Scall None
+                      (Evar _store_mem_reg (Tfunction
+                                             (Tcons
+                                               (tptr (Tstruct _bpf_state noattr))
+                                               (Tcons (tptr tuchar)
+                                                 (Tcons tuint
+                                                   (Tcons tulong Tnil))))
+                                             tvoid cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Etempvar _addr_ptr (tptr tuchar)) ::
+                       (Econst_int (Int.repr 8) tuint) ::
+                       (Etempvar _src64 tulong) :: nil))
+                    (Sreturn None)))))
             (LScons None
               (Ssequence
                 (Scall None
@@ -2611,43 +2824,37 @@ Definition f_step := {|
   fn_callconv := cc_default;
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) :: nil);
   fn_vars := nil;
-  fn_temps := ((_pc, tint) :: (_ins, tulong) :: (_op, tuchar) ::
+  fn_temps := ((_pc, tuint) :: (_ins, tulong) :: (_op, tuchar) ::
                (_opc, tuchar) :: (_dst, tuint) :: (_dst64, tulong) ::
-               (_is_imm, tbool) :: (_imm, tint) :: (_imm64, tlong) ::
-               (_src, tuint) :: (_src64, tulong) :: (_dst32, tuint) ::
-               (_src32, tuint) :: (_ofs, tint) :: (_addr, tuint) ::
-               (_t'45, tuint) :: (_t'44, tint) :: (_t'43, tulong) ::
-               (_t'42, tuint) :: (_t'41, tulong) :: (_t'40, tuint) ::
-               (_t'39, tuint) :: (_t'38, tint) :: (_t'37, tint) ::
-               (_t'36, tulong) :: (_t'35, tuint) :: (_t'34, tuint) ::
-               (_t'33, tint) :: (_t'32, tulong) :: (_t'31, tuint) ::
-               (_t'30, tuint) :: (_t'29, tint) :: (_t'28, tuint) ::
-               (_t'27, tulong) :: (_t'26, tuint) :: (_t'25, tlong) ::
-               (_t'24, tint) :: (_t'23, tbool) :: (_t'22, tint) ::
-               (_t'21, tulong) :: (_t'20, tuint) :: (_t'19, tuint) ::
-               (_t'18, tulong) :: (_t'17, tuint) :: (_t'16, tint) ::
-               (_t'15, tbool) :: (_t'14, tuint) :: (_t'13, tulong) ::
-               (_t'12, tuint) :: (_t'11, tulong) :: (_t'10, tuint) ::
-               (_t'9, tlong) :: (_t'8, tint) :: (_t'7, tbool) ::
-               (_t'6, tulong) :: (_t'5, tuint) :: (_t'4, tuchar) ::
-               (_t'3, tuchar) :: (_t'2, tulong) :: (_t'1, tint) :: nil);
+               (_src64, tulong) :: (_dst32, tuint) :: (_src32, tuint) ::
+               (_ofs, tint) :: (_imm, tint) :: (_src, tuint) ::
+               (_addr, tuint) :: (_t'28, tuint) :: (_t'27, tint) ::
+               (_t'26, tulong) :: (_t'25, tuint) :: (_t'24, tulong) ::
+               (_t'23, tuint) :: (_t'22, tint) :: (_t'21, tint) ::
+               (_t'20, tulong) :: (_t'19, tuint) :: (_t'18, tint) ::
+               (_t'17, tulong) :: (_t'16, tuint) :: (_t'15, tint) ::
+               (_t'14, tulong) :: (_t'13, tulong) :: (_t'12, tint) ::
+               (_t'11, tulong) :: (_t'10, tuint) :: (_t'9, tuint) ::
+               (_t'8, tulong) :: (_t'7, tulong) :: (_t'6, tulong) ::
+               (_t'5, tuint) :: (_t'4, tuchar) :: (_t'3, tuchar) ::
+               (_t'2, tulong) :: (_t'1, tuint) :: nil);
   fn_body :=
 (Ssequence
   (Ssequence
     (Scall (Some _t'1)
       (Evar _eval_pc (Tfunction
-                       (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil) tint
+                       (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil) tuint
                        cc_default))
       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
-    (Sset _pc (Etempvar _t'1 tint)))
+    (Sset _pc (Etempvar _t'1 tuint)))
   (Ssequence
     (Ssequence
       (Scall (Some _t'2)
         (Evar _eval_ins (Tfunction
                           (Tcons (tptr (Tstruct _bpf_state noattr))
-                            (Tcons tint Tnil)) tulong cc_default))
+                            (Tcons tuint Tnil)) tulong cc_default))
         ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-         (Etempvar _pc tint) :: nil))
+         (Etempvar _pc tuint) :: nil))
       (Sset _ins (Etempvar _t'2 tulong)))
     (Ssequence
       (Ssequence
@@ -2662,15 +2869,14 @@ Definition f_step := {|
             (Evar _get_opcode (Tfunction (Tcons tuchar Tnil) tuchar
                                 cc_default)) ((Etempvar _op tuchar) :: nil))
           (Sset _opc (Ecast (Etempvar _t'4 tuchar) tuchar)))
-        (Sswitch (Etempvar _opc tuchar)
-          (LScons (Some 7)
-            (Ssequence
-              (Ssequence
-                (Scall (Some _t'5)
-                  (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint
-                                   cc_default))
-                  ((Etempvar _ins tulong) :: nil))
-                (Sset _dst (Etempvar _t'5 tuint)))
+        (Ssequence
+          (Ssequence
+            (Scall (Some _t'5)
+              (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint cc_default))
+              ((Etempvar _ins tulong) :: nil))
+            (Sset _dst (Etempvar _t'5 tuint)))
+          (Sswitch (Etempvar _opc tuchar)
+            (LScons (Some 7)
               (Ssequence
                 (Ssequence
                   (Scall (Some _t'6)
@@ -2685,90 +2891,34 @@ Definition f_step := {|
                 (Ssequence
                   (Ssequence
                     (Scall (Some _t'7)
-                      (Evar _comp_and_0x08_byte (Tfunction
-                                                  (Tcons tuchar Tnil) tbool
-                                                  cc_default))
-                      ((Etempvar _op tuchar) :: nil))
-                    (Sset _is_imm (Ecast (Etempvar _t'7 tbool) tbool)))
-                  (Sifthenelse (Etempvar _is_imm tbool)
-                    (Ssequence
-                      (Ssequence
-                        (Scall (Some _t'8)
-                          (Evar _get_immediate (Tfunction (Tcons tulong Tnil)
-                                                 tint cc_default))
-                          ((Etempvar _ins tulong) :: nil))
-                        (Sset _imm (Etempvar _t'8 tint)))
-                      (Ssequence
-                        (Ssequence
-                          (Scall (Some _t'9)
-                            (Evar _eval_immediate (Tfunction
-                                                    (Tcons tint Tnil) tlong
-                                                    cc_default))
-                            ((Etempvar _imm tint) :: nil))
-                          (Sset _imm64 (Etempvar _t'9 tlong)))
-                        (Ssequence
-                          (Scall None
-                            (Evar _step_opcode_alu64 (Tfunction
-                                                       (Tcons
-                                                         (tptr (Tstruct _bpf_state noattr))
-                                                         (Tcons tulong
-                                                           (Tcons tulong
-                                                             (Tcons tuint
-                                                               (Tcons tuchar
-                                                                 Tnil)))))
-                                                       tvoid cc_default))
-                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                             (Etempvar _dst64 tulong) ::
-                             (Etempvar _imm64 tlong) ::
-                             (Etempvar _dst tuint) ::
-                             (Etempvar _op tuchar) :: nil))
-                          (Sreturn None))))
-                    (Ssequence
-                      (Ssequence
-                        (Scall (Some _t'10)
-                          (Evar _get_src (Tfunction (Tcons tulong Tnil) tuint
-                                           cc_default))
-                          ((Etempvar _ins tulong) :: nil))
-                        (Sset _src (Etempvar _t'10 tuint)))
-                      (Ssequence
-                        (Ssequence
-                          (Scall (Some _t'11)
-                            (Evar _eval_reg (Tfunction
-                                              (Tcons
-                                                (tptr (Tstruct _bpf_state noattr))
-                                                (Tcons tuint Tnil)) tulong
-                                              cc_default))
-                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                             (Etempvar _src tuint) :: nil))
-                          (Sset _src64 (Etempvar _t'11 tulong)))
-                        (Ssequence
-                          (Scall None
-                            (Evar _step_opcode_alu64 (Tfunction
-                                                       (Tcons
-                                                         (tptr (Tstruct _bpf_state noattr))
-                                                         (Tcons tulong
-                                                           (Tcons tulong
-                                                             (Tcons tuint
-                                                               (Tcons tuchar
-                                                                 Tnil)))))
-                                                       tvoid cc_default))
-                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                             (Etempvar _dst64 tulong) ::
-                             (Etempvar _src64 tulong) ::
-                             (Etempvar _dst tuint) ::
-                             (Etempvar _op tuchar) :: nil))
-                          (Sreturn None))))))))
-            (LScons (Some 4)
-              (Ssequence
-                (Ssequence
-                  (Scall (Some _t'12)
-                    (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint
-                                     cc_default))
-                    ((Etempvar _ins tulong) :: nil))
-                  (Sset _dst (Etempvar _t'12 tuint)))
+                      (Evar _get_src64 (Tfunction
+                                         (Tcons
+                                           (tptr (Tstruct _bpf_state noattr))
+                                           (Tcons tuchar (Tcons tulong Tnil)))
+                                         tulong cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Etempvar _op tuchar) :: (Etempvar _ins tulong) ::
+                       nil))
+                    (Sset _src64 (Etempvar _t'7 tulong)))
+                  (Ssequence
+                    (Scall None
+                      (Evar _step_opcode_alu64 (Tfunction
+                                                 (Tcons
+                                                   (tptr (Tstruct _bpf_state noattr))
+                                                   (Tcons tulong
+                                                     (Tcons tulong
+                                                       (Tcons tuint
+                                                         (Tcons tuchar Tnil)))))
+                                                 tvoid cc_default))
+                      ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                       (Etempvar _dst64 tulong) ::
+                       (Etempvar _src64 tulong) :: (Etempvar _dst tuint) ::
+                       (Etempvar _op tuchar) :: nil))
+                    (Sreturn None))))
+              (LScons (Some 4)
                 (Ssequence
                   (Ssequence
-                    (Scall (Some _t'13)
+                    (Scall (Some _t'8)
                       (Evar _eval_reg (Tfunction
                                         (Tcons
                                           (tptr (Tstruct _bpf_state noattr))
@@ -2776,106 +2926,48 @@ Definition f_step := {|
                                         cc_default))
                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                        (Etempvar _dst tuint) :: nil))
-                    (Sset _dst64 (Etempvar _t'13 tulong)))
+                    (Sset _dst64 (Etempvar _t'8 tulong)))
                   (Ssequence
                     (Ssequence
-                      (Scall (Some _t'14)
+                      (Scall (Some _t'9)
                         (Evar _reg64_to_reg32 (Tfunction (Tcons tulong Tnil)
                                                 tuint cc_default))
                         ((Etempvar _dst64 tulong) :: nil))
-                      (Sset _dst32 (Etempvar _t'14 tuint)))
+                      (Sset _dst32 (Etempvar _t'9 tuint)))
                     (Ssequence
                       (Ssequence
-                        (Scall (Some _t'15)
-                          (Evar _comp_and_0x08_byte (Tfunction
-                                                      (Tcons tuchar Tnil)
-                                                      tbool cc_default))
-                          ((Etempvar _op tuchar) :: nil))
-                        (Sset _is_imm (Ecast (Etempvar _t'15 tbool) tbool)))
-                      (Sifthenelse (Etempvar _is_imm tbool)
-                        (Ssequence
-                          (Ssequence
-                            (Scall (Some _t'16)
-                              (Evar _get_immediate (Tfunction
-                                                     (Tcons tulong Tnil) tint
-                                                     cc_default))
-                              ((Etempvar _ins tulong) :: nil))
-                            (Sset _imm (Etempvar _t'16 tint)))
-                          (Ssequence
-                            (Scall None
-                              (Evar _step_opcode_alu32 (Tfunction
-                                                         (Tcons
-                                                           (tptr (Tstruct _bpf_state noattr))
+                        (Scall (Some _t'10)
+                          (Evar _get_src32 (Tfunction
+                                             (Tcons
+                                               (tptr (Tstruct _bpf_state noattr))
+                                               (Tcons tuchar
+                                                 (Tcons tulong Tnil))) tuint
+                                             cc_default))
+                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                           (Etempvar _op tuchar) :: (Etempvar _ins tulong) ::
+                           nil))
+                        (Sset _src32 (Etempvar _t'10 tuint)))
+                      (Ssequence
+                        (Scall None
+                          (Evar _step_opcode_alu32 (Tfunction
+                                                     (Tcons
+                                                       (tptr (Tstruct _bpf_state noattr))
+                                                       (Tcons tuint
+                                                         (Tcons tuint
                                                            (Tcons tuint
-                                                             (Tcons tuint
-                                                               (Tcons tuint
-                                                                 (Tcons
-                                                                   tuchar
-                                                                   Tnil)))))
-                                                         tvoid cc_default))
-                              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                               (Etempvar _dst32 tuint) ::
-                               (Etempvar _imm tint) ::
-                               (Etempvar _dst tuint) ::
-                               (Etempvar _op tuchar) :: nil))
-                            (Sreturn None)))
-                        (Ssequence
-                          (Ssequence
-                            (Scall (Some _t'17)
-                              (Evar _get_src (Tfunction (Tcons tulong Tnil)
-                                               tuint cc_default))
-                              ((Etempvar _ins tulong) :: nil))
-                            (Sset _src (Etempvar _t'17 tuint)))
-                          (Ssequence
-                            (Ssequence
-                              (Scall (Some _t'18)
-                                (Evar _eval_reg (Tfunction
-                                                  (Tcons
-                                                    (tptr (Tstruct _bpf_state noattr))
-                                                    (Tcons tuint Tnil))
-                                                  tulong cc_default))
-                                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                 (Etempvar _src tuint) :: nil))
-                              (Sset _src64 (Etempvar _t'18 tulong)))
-                            (Ssequence
-                              (Ssequence
-                                (Scall (Some _t'19)
-                                  (Evar _reg64_to_reg32 (Tfunction
-                                                          (Tcons tulong Tnil)
-                                                          tuint cc_default))
-                                  ((Etempvar _src64 tulong) :: nil))
-                                (Sset _src32 (Etempvar _t'19 tuint)))
-                              (Ssequence
-                                (Scall None
-                                  (Evar _step_opcode_alu32 (Tfunction
-                                                             (Tcons
-                                                               (tptr (Tstruct _bpf_state noattr))
-                                                               (Tcons tuint
-                                                                 (Tcons tuint
-                                                                   (Tcons
-                                                                    tuint
-                                                                    (Tcons
-                                                                    tuchar
-                                                                    Tnil)))))
-                                                             tvoid
-                                                             cc_default))
-                                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                   (Etempvar _dst32 tuint) ::
-                                   (Etempvar _src32 tuint) ::
-                                   (Etempvar _dst tuint) ::
-                                   (Etempvar _op tuchar) :: nil))
-                                (Sreturn None))))))))))
-              (LScons (Some 5)
-                (Ssequence
-                  (Ssequence
-                    (Scall (Some _t'20)
-                      (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint
-                                       cc_default))
-                      ((Etempvar _ins tulong) :: nil))
-                    (Sset _dst (Etempvar _t'20 tuint)))
+                                                             (Tcons tuchar
+                                                               Tnil)))))
+                                                     tvoid cc_default))
+                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                           (Etempvar _dst32 tuint) ::
+                           (Etempvar _src32 tuint) ::
+                           (Etempvar _dst tuint) :: (Etempvar _op tuchar) ::
+                           nil))
+                        (Sreturn None)))))
+                (LScons (Some 5)
                   (Ssequence
                     (Ssequence
-                      (Scall (Some _t'21)
+                      (Scall (Some _t'11)
                         (Evar _eval_reg (Tfunction
                                           (Tcons
                                             (tptr (Tstruct _bpf_state noattr))
@@ -2883,155 +2975,97 @@ Definition f_step := {|
                                           cc_default))
                         ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                          (Etempvar _dst tuint) :: nil))
-                      (Sset _dst64 (Etempvar _t'21 tulong)))
+                      (Sset _dst64 (Etempvar _t'11 tulong)))
                     (Ssequence
                       (Ssequence
-                        (Scall (Some _t'22)
+                        (Scall (Some _t'12)
                           (Evar _get_offset (Tfunction (Tcons tulong Tnil)
                                               tint cc_default))
                           ((Etempvar _ins tulong) :: nil))
-                        (Sset _ofs (Etempvar _t'22 tint)))
+                        (Sset _ofs (Etempvar _t'12 tint)))
                       (Ssequence
                         (Ssequence
-                          (Scall (Some _t'23)
-                            (Evar _comp_and_0x08_byte (Tfunction
-                                                        (Tcons tuchar Tnil)
-                                                        tbool cc_default))
-                            ((Etempvar _op tuchar) :: nil))
-                          (Sset _is_imm (Ecast (Etempvar _t'23 tbool) tbool)))
-                        (Sifthenelse (Etempvar _is_imm tbool)
-                          (Ssequence
-                            (Ssequence
-                              (Scall (Some _t'24)
-                                (Evar _get_immediate (Tfunction
-                                                       (Tcons tulong Tnil)
-                                                       tint cc_default))
-                                ((Etempvar _ins tulong) :: nil))
-                              (Sset _imm (Etempvar _t'24 tint)))
-                            (Ssequence
-                              (Ssequence
-                                (Scall (Some _t'25)
-                                  (Evar _eval_immediate (Tfunction
-                                                          (Tcons tint Tnil)
-                                                          tlong cc_default))
-                                  ((Etempvar _imm tint) :: nil))
-                                (Sset _imm64 (Etempvar _t'25 tlong)))
-                              (Ssequence
-                                (Scall None
-                                  (Evar _step_opcode_branch (Tfunction
-                                                              (Tcons
-                                                                (tptr (Tstruct _bpf_state noattr))
-                                                                (Tcons tulong
-                                                                  (Tcons
-                                                                    tulong
-                                                                    (Tcons
-                                                                    tint
-                                                                    (Tcons
-                                                                    tint
-                                                                    (Tcons
-                                                                    tuchar
-                                                                    Tnil))))))
-                                                              tvoid
-                                                              cc_default))
-                                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                   (Etempvar _dst64 tulong) ::
-                                   (Etempvar _imm64 tlong) ::
-                                   (Etempvar _pc tint) ::
-                                   (Etempvar _ofs tint) ::
-                                   (Etempvar _op tuchar) :: nil))
-                                (Sreturn None))))
-                          (Ssequence
-                            (Ssequence
-                              (Scall (Some _t'26)
-                                (Evar _get_src (Tfunction (Tcons tulong Tnil)
-                                                 tuint cc_default))
-                                ((Etempvar _ins tulong) :: nil))
-                              (Sset _src (Etempvar _t'26 tuint)))
-                            (Ssequence
-                              (Ssequence
-                                (Scall (Some _t'27)
-                                  (Evar _eval_reg (Tfunction
-                                                    (Tcons
-                                                      (tptr (Tstruct _bpf_state noattr))
-                                                      (Tcons tuint Tnil))
-                                                    tulong cc_default))
-                                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                   (Etempvar _src tuint) :: nil))
-                                (Sset _src64 (Etempvar _t'27 tulong)))
-                              (Ssequence
-                                (Scall None
-                                  (Evar _step_opcode_branch (Tfunction
-                                                              (Tcons
-                                                                (tptr (Tstruct _bpf_state noattr))
-                                                                (Tcons tulong
-                                                                  (Tcons
-                                                                    tulong
-                                                                    (Tcons
-                                                                    tint
-                                                                    (Tcons
-                                                                    tint
-                                                                    (Tcons
-                                                                    tuchar
-                                                                    Tnil))))))
-                                                              tvoid
-                                                              cc_default))
-                                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                                   (Etempvar _dst64 tulong) ::
-                                   (Etempvar _src64 tulong) ::
-                                   (Etempvar _pc tint) ::
-                                   (Etempvar _ofs tint) ::
-                                   (Etempvar _op tuchar) :: nil))
-                                (Sreturn None)))))))))
-                (LScons (Some 0)
-                  (Ssequence
-                    (Ssequence
-                      (Scall (Some _t'28)
-                        (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint
-                                         cc_default))
-                        ((Etempvar _ins tulong) :: nil))
-                      (Sset _dst (Etempvar _t'28 tuint)))
-                    (Ssequence
-                      (Ssequence
-                        (Scall (Some _t'29)
-                          (Evar _get_immediate (Tfunction (Tcons tulong Tnil)
-                                                 tint cc_default))
-                          ((Etempvar _ins tulong) :: nil))
-                        (Sset _imm (Etempvar _t'29 tint)))
-                      (Ssequence
-                        (Scall None
-                          (Evar _step_opcode_mem_ld_imm (Tfunction
-                                                          (Tcons
-                                                            (tptr (Tstruct _bpf_state noattr))
-                                                            (Tcons tint
-                                                              (Tcons tint
+                          (Scall (Some _t'13)
+                            (Evar _get_src64 (Tfunction
+                                               (Tcons
+                                                 (tptr (Tstruct _bpf_state noattr))
+                                                 (Tcons tuchar
+                                                   (Tcons tulong Tnil)))
+                                               tulong cc_default))
+                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                             (Etempvar _op tuchar) ::
+                             (Etempvar _ins tulong) :: nil))
+                          (Sset _src64 (Etempvar _t'13 tulong)))
+                        (Ssequence
+                          (Scall None
+                            (Evar _step_opcode_branch (Tfunction
+                                                        (Tcons
+                                                          (tptr (Tstruct _bpf_state noattr))
+                                                          (Tcons tulong
+                                                            (Tcons tulong
+                                                              (Tcons tuint
                                                                 (Tcons tuint
                                                                   (Tcons
                                                                     tuchar
-                                                                    Tnil)))))
-                                                          tvoid cc_default))
-                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                           (Etempvar _imm tint) :: (Etempvar _pc tint) ::
-                           (Etempvar _dst tuint) :: (Etempvar _op tuchar) ::
-                           nil))
-                        (Sreturn None))))
-                  (LScons (Some 1)
+                                                                    Tnil))))))
+                                                        tvoid cc_default))
+                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                             (Etempvar _dst64 tulong) ::
+                             (Etempvar _src64 tulong) ::
+                             (Etempvar _pc tuint) ::
+                             (Ecast (Etempvar _ofs tint) tuint) ::
+                             (Etempvar _op tuchar) :: nil))
+                          (Sreturn None)))))
+                  (LScons (Some 0)
                     (Ssequence
                       (Ssequence
-                        (Scall (Some _t'30)
-                          (Evar _get_dst (Tfunction (Tcons tulong Tnil) tuint
-                                           cc_default))
-                          ((Etempvar _ins tulong) :: nil))
-                        (Sset _dst (Etempvar _t'30 tuint)))
+                        (Scall (Some _t'14)
+                          (Evar _eval_reg (Tfunction
+                                            (Tcons
+                                              (tptr (Tstruct _bpf_state noattr))
+                                              (Tcons tuint Tnil)) tulong
+                                            cc_default))
+                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                           (Etempvar _dst tuint) :: nil))
+                        (Sset _dst64 (Etempvar _t'14 tulong)))
                       (Ssequence
                         (Ssequence
-                          (Scall (Some _t'31)
+                          (Scall (Some _t'15)
+                            (Evar _get_immediate (Tfunction
+                                                   (Tcons tulong Tnil) tint
+                                                   cc_default))
+                            ((Etempvar _ins tulong) :: nil))
+                          (Sset _imm (Etempvar _t'15 tint)))
+                        (Ssequence
+                          (Scall None
+                            (Evar _step_opcode_mem_ld_imm (Tfunction
+                                                            (Tcons
+                                                              (tptr (Tstruct _bpf_state noattr))
+                                                              (Tcons tint
+                                                                (Tcons tulong
+                                                                  (Tcons
+                                                                    tuint
+                                                                    (Tcons
+                                                                    tuchar
+                                                                    Tnil)))))
+                                                            tvoid cc_default))
+                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                             (Etempvar _imm tint) ::
+                             (Etempvar _dst64 tulong) ::
+                             (Etempvar _dst tuint) ::
+                             (Etempvar _op tuchar) :: nil))
+                          (Sreturn None))))
+                    (LScons (Some 1)
+                      (Ssequence
+                        (Ssequence
+                          (Scall (Some _t'16)
                             (Evar _get_src (Tfunction (Tcons tulong Tnil)
                                              tuint cc_default))
                             ((Etempvar _ins tulong) :: nil))
-                          (Sset _src (Etempvar _t'31 tuint)))
+                          (Sset _src (Etempvar _t'16 tuint)))
                         (Ssequence
                           (Ssequence
-                            (Scall (Some _t'32)
+                            (Scall (Some _t'17)
                               (Evar _eval_reg (Tfunction
                                                 (Tcons
                                                   (tptr (Tstruct _bpf_state noattr))
@@ -3039,25 +3073,25 @@ Definition f_step := {|
                                                 cc_default))
                               ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                (Etempvar _src tuint) :: nil))
-                            (Sset _src64 (Etempvar _t'32 tulong)))
+                            (Sset _src64 (Etempvar _t'17 tulong)))
                           (Ssequence
                             (Ssequence
-                              (Scall (Some _t'33)
+                              (Scall (Some _t'18)
                                 (Evar _get_offset (Tfunction
                                                     (Tcons tulong Tnil) tint
                                                     cc_default))
                                 ((Etempvar _ins tulong) :: nil))
-                              (Sset _ofs (Etempvar _t'33 tint)))
+                              (Sset _ofs (Etempvar _t'18 tint)))
                             (Ssequence
                               (Ssequence
-                                (Scall (Some _t'34)
+                                (Scall (Some _t'19)
                                   (Evar _get_addr_ofs (Tfunction
                                                         (Tcons tulong
                                                           (Tcons tint Tnil))
                                                         tuint cc_default))
                                   ((Etempvar _src64 tulong) ::
                                    (Etempvar _ofs tint) :: nil))
-                                (Sset _addr (Etempvar _t'34 tuint)))
+                                (Sset _addr (Etempvar _t'19 tuint)))
                               (Ssequence
                                 (Scall None
                                   (Evar _step_opcode_mem_ld_reg (Tfunction
@@ -3066,31 +3100,21 @@ Definition f_step := {|
                                                                     (Tcons
                                                                     tuint
                                                                     (Tcons
-                                                                    tint
-                                                                    (Tcons
                                                                     tuint
                                                                     (Tcons
                                                                     tuchar
-                                                                    Tnil)))))
+                                                                    Tnil))))
                                                                   tvoid
                                                                   cc_default))
                                   ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                    (Etempvar _addr tuint) ::
-                                   (Etempvar _pc tint) ::
                                    (Etempvar _dst tuint) ::
                                    (Etempvar _op tuchar) :: nil))
-                                (Sreturn None)))))))
-                    (LScons (Some 2)
-                      (Ssequence
-                        (Ssequence
-                          (Scall (Some _t'35)
-                            (Evar _get_dst (Tfunction (Tcons tulong Tnil)
-                                             tuint cc_default))
-                            ((Etempvar _ins tulong) :: nil))
-                          (Sset _dst (Etempvar _t'35 tuint)))
+                                (Sreturn None))))))
+                      (LScons (Some 2)
                         (Ssequence
                           (Ssequence
-                            (Scall (Some _t'36)
+                            (Scall (Some _t'20)
                               (Evar _eval_reg (Tfunction
                                                 (Tcons
                                                   (tptr (Tstruct _bpf_state noattr))
@@ -3098,33 +3122,33 @@ Definition f_step := {|
                                                 cc_default))
                               ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                (Etempvar _dst tuint) :: nil))
-                            (Sset _dst64 (Etempvar _t'36 tulong)))
+                            (Sset _dst64 (Etempvar _t'20 tulong)))
                           (Ssequence
                             (Ssequence
-                              (Scall (Some _t'37)
+                              (Scall (Some _t'21)
                                 (Evar _get_offset (Tfunction
                                                     (Tcons tulong Tnil) tint
                                                     cc_default))
                                 ((Etempvar _ins tulong) :: nil))
-                              (Sset _ofs (Etempvar _t'37 tint)))
+                              (Sset _ofs (Etempvar _t'21 tint)))
                             (Ssequence
                               (Ssequence
-                                (Scall (Some _t'38)
+                                (Scall (Some _t'22)
                                   (Evar _get_immediate (Tfunction
                                                          (Tcons tulong Tnil)
                                                          tint cc_default))
                                   ((Etempvar _ins tulong) :: nil))
-                                (Sset _imm (Etempvar _t'38 tint)))
+                                (Sset _imm (Etempvar _t'22 tint)))
                               (Ssequence
                                 (Ssequence
-                                  (Scall (Some _t'39)
+                                  (Scall (Some _t'23)
                                     (Evar _get_addr_ofs (Tfunction
                                                           (Tcons tulong
                                                             (Tcons tint Tnil))
                                                           tuint cc_default))
                                     ((Etempvar _dst64 tulong) ::
                                      (Etempvar _ofs tint) :: nil))
-                                  (Sset _addr (Etempvar _t'39 tuint)))
+                                  (Sset _addr (Etempvar _t'23 tuint)))
                                 (Ssequence
                                   (Scall None
                                     (Evar _step_opcode_mem_st_imm (Tfunction
@@ -3135,32 +3159,22 @@ Definition f_step := {|
                                                                     (Tcons
                                                                     tuint
                                                                     (Tcons
-                                                                    tint
-                                                                    (Tcons
                                                                     tuint
                                                                     (Tcons
                                                                     tuchar
-                                                                    Tnil))))))
+                                                                    Tnil)))))
                                                                     tvoid
                                                                     cc_default))
                                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                      (Etempvar _imm tint) ::
                                      (Etempvar _addr tuint) ::
-                                     (Etempvar _pc tint) ::
                                      (Etempvar _dst tuint) ::
                                      (Etempvar _op tuchar) :: nil))
-                                  (Sreturn None)))))))
-                      (LScons (Some 3)
-                        (Ssequence
-                          (Ssequence
-                            (Scall (Some _t'40)
-                              (Evar _get_dst (Tfunction (Tcons tulong Tnil)
-                                               tuint cc_default))
-                              ((Etempvar _ins tulong) :: nil))
-                            (Sset _dst (Etempvar _t'40 tuint)))
+                                  (Sreturn None))))))
+                        (LScons (Some 3)
                           (Ssequence
                             (Ssequence
-                              (Scall (Some _t'41)
+                              (Scall (Some _t'24)
                                 (Evar _eval_reg (Tfunction
                                                   (Tcons
                                                     (tptr (Tstruct _bpf_state noattr))
@@ -3168,18 +3182,18 @@ Definition f_step := {|
                                                   tulong cc_default))
                                 ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                  (Etempvar _dst tuint) :: nil))
-                              (Sset _dst64 (Etempvar _t'41 tulong)))
+                              (Sset _dst64 (Etempvar _t'24 tulong)))
                             (Ssequence
                               (Ssequence
-                                (Scall (Some _t'42)
+                                (Scall (Some _t'25)
                                   (Evar _get_src (Tfunction
                                                    (Tcons tulong Tnil) tuint
                                                    cc_default))
                                   ((Etempvar _ins tulong) :: nil))
-                                (Sset _src (Etempvar _t'42 tuint)))
+                                (Sset _src (Etempvar _t'25 tuint)))
                               (Ssequence
                                 (Ssequence
-                                  (Scall (Some _t'43)
+                                  (Scall (Some _t'26)
                                     (Evar _eval_reg (Tfunction
                                                       (Tcons
                                                         (tptr (Tstruct _bpf_state noattr))
@@ -3187,18 +3201,18 @@ Definition f_step := {|
                                                       tulong cc_default))
                                     ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                      (Etempvar _src tuint) :: nil))
-                                  (Sset _src64 (Etempvar _t'43 tulong)))
+                                  (Sset _src64 (Etempvar _t'26 tulong)))
                                 (Ssequence
                                   (Ssequence
-                                    (Scall (Some _t'44)
+                                    (Scall (Some _t'27)
                                       (Evar _get_offset (Tfunction
                                                           (Tcons tulong Tnil)
                                                           tint cc_default))
                                       ((Etempvar _ins tulong) :: nil))
-                                    (Sset _ofs (Etempvar _t'44 tint)))
+                                    (Sset _ofs (Etempvar _t'27 tint)))
                                   (Ssequence
                                     (Ssequence
-                                      (Scall (Some _t'45)
+                                      (Scall (Some _t'28)
                                         (Evar _get_addr_ofs (Tfunction
                                                               (Tcons tulong
                                                                 (Tcons tint
@@ -3207,7 +3221,7 @@ Definition f_step := {|
                                                               cc_default))
                                         ((Etempvar _dst64 tulong) ::
                                          (Etempvar _ofs tint) :: nil))
-                                      (Sset _addr (Etempvar _t'45 tuint)))
+                                      (Sset _addr (Etempvar _t'28 tuint)))
                                     (Ssequence
                                       (Scall None
                                         (Evar _step_opcode_mem_st_reg 
@@ -3216,30 +3230,28 @@ Definition f_step := {|
                                             (tptr (Tstruct _bpf_state noattr))
                                             (Tcons tulong
                                               (Tcons tuint
-                                                (Tcons tint
-                                                  (Tcons tuint
-                                                    (Tcons tuchar Tnil))))))
+                                                (Tcons tuint
+                                                  (Tcons tuchar Tnil)))))
                                           tvoid cc_default))
                                         ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                                          (Etempvar _src64 tulong) ::
                                          (Etempvar _addr tuint) ::
-                                         (Etempvar _pc tint) ::
                                          (Etempvar _dst tuint) ::
                                          (Etempvar _op tuchar) :: nil))
-                                      (Sreturn None))))))))
-                        (LScons None
-                          (Ssequence
-                            (Scall None
-                              (Evar _upd_flag (Tfunction
-                                                (Tcons
-                                                  (tptr (Tstruct _bpf_state noattr))
-                                                  (Tcons tint Tnil)) tvoid
-                                                cc_default))
-                              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                               (Eunop Oneg (Econst_int (Int.repr 1) tint)
-                                 tint) :: nil))
-                            (Sreturn None))
-                          LSnil)))))))))))))
+                                      (Sreturn None)))))))
+                          (LScons None
+                            (Ssequence
+                              (Scall None
+                                (Evar _upd_flag (Tfunction
+                                                  (Tcons
+                                                    (tptr (Tstruct _bpf_state noattr))
+                                                    (Tcons tint Tnil)) tvoid
+                                                  cc_default))
+                                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                                 (Eunop Oneg (Econst_int (Int.repr 1) tint)
+                                   tint) :: nil))
+                              (Sreturn None))
+                            LSnil))))))))))))))
 |}.
 
 Definition f_bpf_interpreter_aux := {|
@@ -3248,9 +3260,10 @@ Definition f_bpf_interpreter_aux := {|
   fn_params := ((_st, (tptr (Tstruct _bpf_state noattr))) ::
                 (_fuel, tuint) :: nil);
   fn_vars := nil;
-  fn_temps := ((_fuel0, tuint) :: (_len, tint) :: (_pc, tint) ::
-               (_f, tint) :: (_t'4, tint) :: (_t'3, tint) :: (_t'2, tint) ::
-               (_t'1, tint) :: nil);
+  fn_temps := ((_fuel0, tuint) :: (_len, tuint) :: (_pc, tuint) ::
+               (_f, tint) :: (_len0, tuint) :: (_pc0, tuint) ::
+               (_t'5, tuint) :: (_t'4, tuint) :: (_t'3, tint) ::
+               (_t'2, tuint) :: (_t'1, tuint) :: nil);
   fn_body :=
 (Sifthenelse (Ebinop Oeq (Etempvar _fuel tuint)
                (Econst_int (Int.repr 0) tuint) tint)
@@ -3271,71 +3284,98 @@ Definition f_bpf_interpreter_aux := {|
         (Scall (Some _t'1)
           (Evar _eval_ins_len (Tfunction
                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  Tnil) tint cc_default))
+                                  Tnil) tuint cc_default))
           ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
-        (Sset _len (Etempvar _t'1 tint)))
+        (Sset _len (Etempvar _t'1 tuint)))
       (Ssequence
         (Ssequence
           (Scall (Some _t'2)
             (Evar _eval_pc (Tfunction
                              (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil)
-                             tint cc_default))
+                             tuint cc_default))
             ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
-          (Sset _pc (Etempvar _t'2 tint)))
-        (Ssequence
-          (Sifthenelse (Ebinop Ole (Econst_int (Int.repr 0) tuint)
-                         (Etempvar _pc tint) tint)
-            (Sset _t'4
-              (Ecast
-                (Ebinop Olt (Etempvar _pc tint) (Etempvar _len tint) tint)
-                tbool))
-            (Sset _t'4 (Econst_int (Int.repr 0) tint)))
-          (Sifthenelse (Etempvar _t'4 tint)
+          (Sset _pc (Etempvar _t'2 tuint)))
+        (Sifthenelse (Ebinop Olt (Etempvar _pc tuint) (Etempvar _len tuint)
+                       tint)
+          (Ssequence
+            (Scall None
+              (Evar _step (Tfunction
+                            (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil)
+                            tvoid cc_default))
+              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
             (Ssequence
-              (Scall None
-                (Evar _step (Tfunction
-                              (Tcons (tptr (Tstruct _bpf_state noattr)) Tnil)
-                              tvoid cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
               (Ssequence
+                (Scall (Some _t'3)
+                  (Evar _eval_flag (Tfunction
+                                     (Tcons
+                                       (tptr (Tstruct _bpf_state noattr))
+                                       Tnil) tint cc_default))
+                  ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
+                (Sset _f (Etempvar _t'3 tint)))
+              (Sifthenelse (Ebinop Oeq (Etempvar _f tint)
+                             (Econst_int (Int.repr 0) tint) tint)
                 (Ssequence
-                  (Scall (Some _t'3)
-                    (Evar _eval_flag (Tfunction
-                                       (Tcons
-                                         (tptr (Tstruct _bpf_state noattr))
-                                         Tnil) tint cc_default))
-                    ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                     nil))
-                  (Sset _f (Etempvar _t'3 tint)))
-                (Sifthenelse (Ebinop Oeq (Etempvar _f tint)
-                               (Econst_int (Int.repr 0) tint) tint)
                   (Ssequence
-                    (Scall None
-                      (Evar _upd_pc_incr (Tfunction
-                                           (Tcons
-                                             (tptr (Tstruct _bpf_state noattr))
-                                             Tnil) tvoid cc_default))
+                    (Scall (Some _t'4)
+                      (Evar _eval_ins_len (Tfunction
+                                            (Tcons
+                                              (tptr (Tstruct _bpf_state noattr))
+                                              Tnil) tuint cc_default))
                       ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
                        nil))
+                    (Sset _len0 (Etempvar _t'4 tuint)))
+                  (Ssequence
                     (Ssequence
-                      (Scall None
-                        (Evar _bpf_interpreter_aux (Tfunction
-                                                     (Tcons
-                                                       (tptr (Tstruct _bpf_state noattr))
-                                                       (Tcons tuint Tnil))
-                                                     tvoid cc_default))
+                      (Scall (Some _t'5)
+                        (Evar _eval_pc (Tfunction
+                                         (Tcons
+                                           (tptr (Tstruct _bpf_state noattr))
+                                           Tnil) tuint cc_default))
                         ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                         (Etempvar _fuel0 tuint) :: nil))
-                      (Sreturn None)))
-                  (Sreturn None))))
-            (Ssequence
-              (Scall None
-                (Evar _upd_flag (Tfunction
-                                  (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tint Tnil)) tvoid cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Eunop Oneg (Econst_int (Int.repr 5) tint) tint) :: nil))
-              (Sreturn None))))))))
+                         nil))
+                      (Sset _pc0 (Etempvar _t'5 tuint)))
+                    (Sifthenelse (Ebinop Olt
+                                   (Ebinop Oadd (Etempvar _pc0 tuint)
+                                     (Econst_int (Int.repr 1) tuint) tuint)
+                                   (Etempvar _len0 tuint) tint)
+                      (Ssequence
+                        (Scall None
+                          (Evar _upd_pc_incr (Tfunction
+                                               (Tcons
+                                                 (tptr (Tstruct _bpf_state noattr))
+                                                 Tnil) tvoid cc_default))
+                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                           nil))
+                        (Ssequence
+                          (Scall None
+                            (Evar _bpf_interpreter_aux (Tfunction
+                                                         (Tcons
+                                                           (tptr (Tstruct _bpf_state noattr))
+                                                           (Tcons tuint Tnil))
+                                                         tvoid cc_default))
+                            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                             (Etempvar _fuel0 tuint) :: nil))
+                          (Sreturn None)))
+                      (Ssequence
+                        (Scall None
+                          (Evar _upd_flag (Tfunction
+                                            (Tcons
+                                              (tptr (Tstruct _bpf_state noattr))
+                                              (Tcons tint Tnil)) tvoid
+                                            cc_default))
+                          ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                           (Eunop Oneg (Econst_int (Int.repr 5) tint) tint) ::
+                           nil))
+                        (Sreturn None)))))
+                (Sreturn None))))
+          (Ssequence
+            (Scall None
+              (Evar _upd_flag (Tfunction
+                                (Tcons (tptr (Tstruct _bpf_state noattr))
+                                  (Tcons tint Tnil)) tvoid cc_default))
+              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+               (Eunop Oneg (Econst_int (Int.repr 5) tint) tint) :: nil))
+            (Sreturn None)))))))
 |}.
 
 Definition f_bpf_interpreter := {|
@@ -3346,7 +3386,8 @@ Definition f_bpf_interpreter := {|
   fn_vars := nil;
   fn_temps := ((_mrs, (tptr (Tstruct _memory_region noattr))) ::
                (_bpf_ctx, (tptr (Tstruct _memory_region noattr))) ::
-               (_f, tint) :: (_t'4, tulong) :: (_t'3, tint) ::
+               (_start, tuint) :: (_f, tint) :: (_res, tulong) ::
+               (_t'5, tulong) :: (_t'4, tint) :: (_t'3, tuint) ::
                (_t'2, (tptr (Tstruct _memory_region noattr))) ::
                (_t'1, (tptr (Tstruct _memory_region noattr))) :: nil);
   fn_body :=
@@ -3364,56 +3405,65 @@ Definition f_bpf_interpreter := {|
     (Ssequence
       (Scall (Some _t'2)
         (Evar _get_mem_region (Tfunction
-                                (Tcons (tptr (Tstruct _bpf_state noattr))
-                                  (Tcons tuint
-                                    (Tcons
-                                      (tptr (Tstruct _memory_region noattr))
-                                      Tnil)))
+                                (Tcons tuint
+                                  (Tcons
+                                    (tptr (Tstruct _memory_region noattr))
+                                    Tnil))
                                 (tptr (Tstruct _memory_region noattr))
                                 cc_default))
-        ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-         (Econst_int (Int.repr 0) tuint) ::
+        ((Econst_int (Int.repr 0) tuint) ::
          (Etempvar _mrs (tptr (Tstruct _memory_region noattr))) :: nil))
       (Sset _bpf_ctx (Etempvar _t'2 (tptr (Tstruct _memory_region noattr)))))
     (Ssequence
-      (Scall None
-        (Evar _upd_reg (Tfunction
-                         (Tcons (tptr (Tstruct _bpf_state noattr))
-                           (Tcons tuint (Tcons tulong Tnil))) tvoid
-                         cc_default))
-        ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-         (Econst_int (Int.repr 1) tuint) ::
-         (Efield
-           (Ederef (Etempvar _bpf_ctx (tptr (Tstruct _memory_region noattr)))
-             (Tstruct _memory_region noattr)) _start_addr tuint) :: nil))
+      (Ssequence
+        (Scall (Some _t'3)
+          (Evar _get_start_addr (Tfunction
+                                  (Tcons
+                                    (tptr (Tstruct _memory_region noattr))
+                                    Tnil) tuint cc_default))
+          ((Etempvar _bpf_ctx (tptr (Tstruct _memory_region noattr))) :: nil))
+        (Sset _start (Etempvar _t'3 tuint)))
       (Ssequence
         (Scall None
-          (Evar _bpf_interpreter_aux (Tfunction
-                                       (Tcons
-                                         (tptr (Tstruct _bpf_state noattr))
-                                         (Tcons tuint Tnil)) tvoid
-                                       cc_default))
+          (Evar _upd_reg (Tfunction
+                           (Tcons (tptr (Tstruct _bpf_state noattr))
+                             (Tcons tuint (Tcons tulong Tnil))) tvoid
+                           cc_default))
           ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-           (Etempvar _fuel tuint) :: nil))
+           (Econst_int (Int.repr 1) tuint) ::
+           (Ecast (Etempvar _start tuint) tulong) :: nil))
         (Ssequence
+          (Scall None
+            (Evar _bpf_interpreter_aux (Tfunction
+                                         (Tcons
+                                           (tptr (Tstruct _bpf_state noattr))
+                                           (Tcons tuint Tnil)) tvoid
+                                         cc_default))
+            ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+             (Etempvar _fuel tuint) :: nil))
           (Ssequence
-            (Scall (Some _t'3)
-              (Evar _eval_flag (Tfunction
-                                 (Tcons (tptr (Tstruct _bpf_state noattr))
-                                   Tnil) tint cc_default))
-              ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
-            (Sset _f (Etempvar _t'3 tint)))
-          (Sifthenelse (Ebinop Oeq (Etempvar _f tint)
-                         (Econst_int (Int.repr 1) tint) tint)
             (Ssequence
               (Scall (Some _t'4)
-                (Evar _eval_reg (Tfunction
-                                  (Tcons (tptr (Tstruct _bpf_state noattr))
-                                    (Tcons tuint Tnil)) tulong cc_default))
-                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
-                 (Econst_int (Int.repr 0) tuint) :: nil))
-              (Sreturn (Some (Etempvar _t'4 tulong))))
-            (Sreturn (Some (Econst_long (Int64.repr 0) tulong)))))))))
+                (Evar _eval_flag (Tfunction
+                                   (Tcons (tptr (Tstruct _bpf_state noattr))
+                                     Tnil) tint cc_default))
+                ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) :: nil))
+              (Sset _f (Etempvar _t'4 tint)))
+            (Sifthenelse (Ebinop Oeq (Etempvar _f tint)
+                           (Econst_int (Int.repr 1) tint) tint)
+              (Ssequence
+                (Ssequence
+                  (Scall (Some _t'5)
+                    (Evar _eval_reg (Tfunction
+                                      (Tcons
+                                        (tptr (Tstruct _bpf_state noattr))
+                                        (Tcons tuint Tnil)) tulong
+                                      cc_default))
+                    ((Etempvar _st (tptr (Tstruct _bpf_state noattr))) ::
+                     (Econst_int (Int.repr 0) tuint) :: nil))
+                  (Sset _res (Etempvar _t'5 tulong)))
+                (Sreturn (Some (Etempvar _res tulong))))
+              (Sreturn (Some (Econst_long (Int64.repr 0) tulong))))))))))
 |}.
 
 Definition composites : list composite_definition :=
@@ -3422,10 +3472,10 @@ Definition composites : list composite_definition :=
     (_block_ptr, (tptr tuchar)) :: nil)
    noattr ::
  Composite _bpf_state Struct
-   ((_state_pc, tint) :: (_bpf_flag, tint) ::
-    (_regsmap, (tarray tulong 11)) :: (_mrs_num, tuint) ::
-    (_mrs, (tptr (Tstruct _memory_region noattr))) :: (_ins_len, tint) ::
-    (_ins, (tptr tulong)) :: nil)
+   ((_state_pc, tuint) :: (_bpf_flag, tint) ::
+    (_regsmap, (tarray tulong 11)) :: (_ins_len, tuint) ::
+    (_ins, (tptr tulong)) :: (_mrs_num, tuint) ::
+    (_mrs, (tptr (Tstruct _memory_region noattr))) :: nil)
    noattr :: nil).
 
 Definition global_definitions : list (ident * globdef fundef type) :=
@@ -3710,13 +3760,18 @@ Definition global_definitions : list (ident * globdef fundef type) :=
  (_store_mem_imm, Gfun(Internal f_store_mem_imm)) ::
  (_eval_ins_len, Gfun(Internal f_eval_ins_len)) ::
  (_eval_ins, Gfun(Internal f_eval_ins)) ::
- (_get_mem_region, Gfun(Internal f_get_mem_region)) ::
+ (_cmp_ptr32_nullM, Gfun(Internal f_cmp_ptr32_nullM)) ::
  (_get_dst, Gfun(Internal f_get_dst)) ::
- (_reg64_to_reg32, Gfun(Internal f_reg64_to_reg32)) ::
  (_get_src, Gfun(Internal f_get_src)) ::
+ (_get_mem_region, Gfun(Internal f_get_mem_region)) ::
+ (__bpf_get_call, Gfun(Internal f__bpf_get_call)) ::
+ (_exec_function, Gfun(Internal f_exec_function)) ::
+ (_reg64_to_reg32, Gfun(Internal f_reg64_to_reg32)) ::
  (_get_offset, Gfun(Internal f_get_offset)) ::
  (_get_immediate, Gfun(Internal f_get_immediate)) ::
  (_eval_immediate, Gfun(Internal f_eval_immediate)) ::
+ (_get_src64, Gfun(Internal f_get_src64)) ::
+ (_get_src32, Gfun(Internal f_get_src32)) ::
  (_get_opcode_ins, Gfun(Internal f_get_opcode_ins)) ::
  (_get_opcode_alu64, Gfun(Internal f_get_opcode_alu64)) ::
  (_get_opcode_alu32, Gfun(Internal f_get_opcode_alu32)) ::
@@ -3729,7 +3784,6 @@ Definition global_definitions : list (ident * globdef fundef type) :=
  (_get_add, Gfun(Internal f_get_add)) ::
  (_get_sub, Gfun(Internal f_get_sub)) ::
  (_get_addr_ofs, Gfun(Internal f_get_addr_ofs)) ::
- (_get_block_ptr, Gfun(Internal f_get_block_ptr)) ::
  (_get_start_addr, Gfun(Internal f_get_start_addr)) ::
  (_get_block_size, Gfun(Internal f_get_block_size)) ::
  (_get_block_perm, Gfun(Internal f_get_block_perm)) ::
@@ -3737,7 +3791,6 @@ Definition global_definitions : list (ident * globdef fundef type) :=
  (_check_mem_aux2, Gfun(Internal f_check_mem_aux2)) ::
  (_check_mem_aux, Gfun(Internal f_check_mem_aux)) ::
  (_check_mem, Gfun(Internal f_check_mem)) ::
- (_comp_and_0x08_byte, Gfun(Internal f_comp_and_0x08_byte)) ::
  (_step_opcode_alu64, Gfun(Internal f_step_opcode_alu64)) ::
  (_step_opcode_alu32, Gfun(Internal f_step_opcode_alu32)) ::
  (_step_opcode_branch, Gfun(Internal f_step_opcode_branch)) ::
@@ -3750,26 +3803,26 @@ Definition global_definitions : list (ident * globdef fundef type) :=
  (_bpf_interpreter, Gfun(Internal f_bpf_interpreter)) :: nil).
 
 Definition public_idents : list ident :=
-(_bpf_interpreter :: ___builtin_debug :: ___builtin_write32_reversed ::
- ___builtin_write16_reversed :: ___builtin_read32_reversed ::
- ___builtin_read16_reversed :: ___builtin_fnmsub :: ___builtin_fnmadd ::
- ___builtin_fmsub :: ___builtin_fmadd :: ___builtin_fmin ::
- ___builtin_fmax :: ___compcert_i64_umulh :: ___compcert_i64_smulh ::
- ___compcert_i64_sar :: ___compcert_i64_shr :: ___compcert_i64_shl ::
- ___compcert_i64_umod :: ___compcert_i64_smod :: ___compcert_i64_udiv ::
- ___compcert_i64_sdiv :: ___compcert_i64_utof :: ___compcert_i64_stof ::
- ___compcert_i64_utod :: ___compcert_i64_stod :: ___compcert_i64_dtou ::
- ___compcert_i64_dtos :: ___builtin_expect :: ___builtin_unreachable ::
- ___compcert_va_composite :: ___compcert_va_float64 ::
- ___compcert_va_int64 :: ___compcert_va_int32 :: ___builtin_va_end ::
- ___builtin_va_copy :: ___builtin_va_arg :: ___builtin_va_start ::
- ___builtin_membar :: ___builtin_annot_intval :: ___builtin_annot ::
- ___builtin_sel :: ___builtin_memcpy_aligned :: ___builtin_sqrt ::
- ___builtin_fsqrt :: ___builtin_fabsf :: ___builtin_fabs ::
- ___builtin_ctzll :: ___builtin_ctzl :: ___builtin_ctz :: ___builtin_clzll ::
- ___builtin_clzl :: ___builtin_clz :: ___builtin_bswap16 ::
- ___builtin_bswap32 :: ___builtin_bswap :: ___builtin_bswap64 ::
- ___builtin_ais_annot :: nil).
+(_bpf_interpreter :: _check_mem :: ___builtin_debug ::
+ ___builtin_write32_reversed :: ___builtin_write16_reversed ::
+ ___builtin_read32_reversed :: ___builtin_read16_reversed ::
+ ___builtin_fnmsub :: ___builtin_fnmadd :: ___builtin_fmsub ::
+ ___builtin_fmadd :: ___builtin_fmin :: ___builtin_fmax ::
+ ___compcert_i64_umulh :: ___compcert_i64_smulh :: ___compcert_i64_sar ::
+ ___compcert_i64_shr :: ___compcert_i64_shl :: ___compcert_i64_umod ::
+ ___compcert_i64_smod :: ___compcert_i64_udiv :: ___compcert_i64_sdiv ::
+ ___compcert_i64_utof :: ___compcert_i64_stof :: ___compcert_i64_utod ::
+ ___compcert_i64_stod :: ___compcert_i64_dtou :: ___compcert_i64_dtos ::
+ ___builtin_expect :: ___builtin_unreachable :: ___compcert_va_composite ::
+ ___compcert_va_float64 :: ___compcert_va_int64 :: ___compcert_va_int32 ::
+ ___builtin_va_end :: ___builtin_va_copy :: ___builtin_va_arg ::
+ ___builtin_va_start :: ___builtin_membar :: ___builtin_annot_intval ::
+ ___builtin_annot :: ___builtin_sel :: ___builtin_memcpy_aligned ::
+ ___builtin_sqrt :: ___builtin_fsqrt :: ___builtin_fabsf ::
+ ___builtin_fabs :: ___builtin_ctzll :: ___builtin_ctzl :: ___builtin_ctz ::
+ ___builtin_clzll :: ___builtin_clzl :: ___builtin_clz ::
+ ___builtin_bswap16 :: ___builtin_bswap32 :: ___builtin_bswap ::
+ ___builtin_bswap64 :: ___builtin_ais_annot :: nil).
 
 Definition prog : Clight.program := 
   mkprogram composites global_definitions public_idents _main Logic.I.

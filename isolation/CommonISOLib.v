@@ -1,20 +1,25 @@
+(**************************************************************************)
+(*  This file is part of CertrBPF,                                        *)
+(*  a formally verified rBPF verifier + interpreter + JIT in Coq.         *)
+(*                                                                        *)
+(*  Copyright (C) 2022 Inria                                              *)
+(*                                                                        *)
+(*  This program is free software; you can redistribute it and/or modify  *)
+(*  it under the terms of the GNU General Public License as published by  *)
+(*  the Free Software Foundation; either version 2 of the License, or     *)
+(*  (at your option) any later version.                                   *)
+(*                                                                        *)
+(*  This program is distributed in the hope that it will be useful,       *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *)
+(*  GNU General Public License for more details.                          *)
+(*                                                                        *)
+(**************************************************************************)
+
 From compcert Require Import Coqlib Integers AST Values Memory Ctypes Archi.
 From Coq Require Import Lia ZArith.
 
 Open Scope Z_scope.
-
-
-Lemma Int64_max_unsigned_eq:
-  Int64.max_unsigned = 18446744073709551615.
-Proof.
-  unfold Int64.max_unsigned, Int64.modulus, Int64.wordsize, Wordsize_64.wordsize; reflexivity.
-Qed.
-
-Lemma Int_max_unsigned_eq:
-  Int.max_unsigned = 4294967295.
-Proof.
-  unfold Int.max_unsigned, Int.modulus, Int.wordsize, Wordsize_32.wordsize; reflexivity.
-Qed.
 
 Lemma size_chunk_gt_zero:
   forall chunk, 0 < size_chunk chunk.
@@ -28,34 +33,9 @@ Lemma size_chunk_int_range:
   forall chunk, 0 <= size_chunk chunk <= Int.max_unsigned.
 Proof.
   unfold size_chunk; intros.
-  rewrite Int_max_unsigned_eq.
+  change Int.max_unsigned with 4294967295.
   split; destruct chunk; try lia.
 Qed.
-
-(*
-Lemma _32_lt_64:
-  Int.ltu int32_32 Int64.iwordsize' = true.
-Proof.
-  unfold int32_32, Int64.iwordsize'.
-  unfold Int64.zwordsize, Int64.wordsize, Wordsize_64.wordsize.
-  unfold Int.ltu.
-  simpl.
-  assert (H0: 0 <= 32 <= Int.max_unsigned).
-  unfold Int.max_unsigned, Int.modulus, Int.wordsize, Wordsize_32.wordsize; simpl; lia.
-  assert (H1: 0 <= 64 <= Int.max_unsigned).
-  unfold Int.max_unsigned, Int.modulus, Int.wordsize, Wordsize_32.wordsize; simpl; lia.
-  rewrite Int.unsigned_repr; try assumption.
-  rewrite Int.unsigned_repr; try assumption.
-  simpl; reflexivity.
-Qed.
-
-Lemma sint16_to_int64_to_vlong:
-  forall ofs,
-    exists v, int64_to_vlong (sint16_to_int64 ofs) = Vlong v.
-Proof.
-  unfold int64_to_vlong, sint16_to_int64; intros.
-  exists (Int64.repr (Int16.Int16.signed ofs)); reflexivity.
-Qed. *)
 
 Lemma Int64_unsigned_ge_0:
   forall v, 0 <= Int64.unsigned v.
@@ -104,27 +84,33 @@ Proof.
   destruct Hrange as [Ha Hb]; assumption.
 Qed.
 
-Lemma Cle_implies_Zle:
+Lemma Cle_Zle_iff:
   forall lo ofs,
-    negb (Int.ltu ofs lo) = true ->
-      Int.unsigned lo <= Int.unsigned ofs.
+    negb (Int.ltu ofs lo) = true <-> Int.unsigned lo <= Int.unsigned ofs.
 Proof.
-  intros.
-  rewrite negb_true_iff in H.
-  unfold Int.ltu in H.
-  destruct (zlt _ _) in H; try inversion H.
-  lia.
+  split; intros.
+  - rewrite negb_true_iff in H.
+    unfold Int.ltu in H.
+    destruct (zlt _ _) in H; try inversion H.
+    lia.
+  - rewrite negb_true_iff.
+    unfold Int.ltu.
+    apply zlt_false.
+    lia.
 Qed.
 
-Lemma Clt_implies_Zlt:
+Lemma Clt_Zlt_iff:
   forall ofs hi,
-    Int.ltu ofs hi = true ->
+    Int.ltu ofs hi = true <->
       Int.unsigned ofs < Int.unsigned hi.
 Proof.
-  intros.
-  unfold Int.ltu in H.
-  destruct (zlt _ _) in H; try inversion H.
-  lia.
+  split; intros.
+  - unfold Int.ltu in H.
+    destruct (zlt _ _) in H; try inversion H.
+    lia.
+  - unfold Int.ltu.
+    apply zlt_true.
+    assumption.
 Qed.
 
 Lemma Int64_unsigned_size_chunk_ge_0:
@@ -178,7 +164,7 @@ Lemma hi_ofs_max_unsigned:
       0 <= Int.unsigned ofs + size_chunk chunk <= Int.max_unsigned.
 Proof.
   intros ofs chunk Hcmp.
-  rewrite Int_max_unsigned_eq in *.
+  change Int.max_unsigned with 4294967295 in *.
   remember ((Int.ltu (Int.repr (4294967295 - size_chunk chunk))) ofs) as k eqn: Hk.
   rewrite Hk in Hcmp; clear Hk.
   rewrite negb_true_iff in Hcmp.
@@ -186,8 +172,7 @@ Proof.
   destruct (zlt _ _) in Hcmp.
   - inversion Hcmp.
   - clear Hcmp.
-    assert (Heq_max: 0 <= 4294967295 - size_chunk chunk <= Int.max_unsigned). {
-      rewrite Int_max_unsigned_eq.
+    assert (Heq_max: 0 <= 4294967295 - size_chunk chunk <= 4294967295). {
       unfold size_chunk; destruct chunk; try lia.
     }
     rewrite (Int.unsigned_repr _ Heq_max) in g.

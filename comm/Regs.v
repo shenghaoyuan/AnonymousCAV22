@@ -1,3 +1,21 @@
+(**************************************************************************)
+(*  This file is part of CertrBPF,                                        *)
+(*  a formally verified rBPF verifier + interpreter + JIT in Coq.         *)
+(*                                                                        *)
+(*  Copyright (C) 2022 Inria                                              *)
+(*                                                                        *)
+(*  This program is free software; you can redistribute it and/or modify  *)
+(*  it under the terms of the GNU General Public License as published by  *)
+(*  the Free Software Foundation; either version 2 of the License, or     *)
+(*  (at your option) any later version.                                   *)
+(*                                                                        *)
+(*  This program is distributed in the hope that it will be useful,       *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *)
+(*  GNU General Public License for more details.                          *)
+(*                                                                        *)
+(**************************************************************************)
+
 From compcert.cfrontend Require Csyntax Ctypes Cop.
 From compcert.common Require Import Values Memory.
 From compcert.lib Require Import Integers.
@@ -17,6 +35,34 @@ Inductive reg: Type :=
 Lemma reg_eq: forall (x y: reg), {x=y} + {x<>y}.
 Proof.
 decide equality. Defined.
+
+Definition reg_eqb (r0 r1: reg) : bool :=
+  match r0, r1 with
+  | R0, R0
+  | R1, R1
+  | R2, R2
+  | R3, R3
+  | R4, R4
+  | R5, R5
+  | R6, R6
+  | R7, R7
+  | R8, R8
+  | R9, R9
+  | R10, R10 => true
+  | _, _ => false
+  end.
+
+Lemma reg_eqb_true:
+  forall x y, x = y <-> reg_eqb x y = true.
+Proof.
+  destruct x, y; simpl; intuition congruence.
+Qed.
+
+Lemma reg_eqb_false:
+  forall x y, x <> y <-> reg_eqb x y = false.
+Proof.
+  destruct x, y; simpl; intuition congruence.
+Qed.
 
 Record regmap: Type := make_regmap{
   r0_val  : Values.val;
@@ -220,44 +266,3 @@ Definition init_regmap: regmap := {|
   r9_val  := val64_zero;
   r10_val := val64_zero;
 |}.
-
-Open Scope Z_scope.
-
-Definition z_to_reg (z:Z): reg :=
-  if (Z.eqb z 0) then
-    R0
-  else if (Z.eqb z 1) then
-    R1
-  else if (Z.eqb z 2) then
-    R2
-  else if (Z.eqb z 3) then
-    R3
-  else if (Z.eqb z 4) then
-    R4
-  else if (Z.eqb z 5) then
-    R5
-  else if (Z.eqb z 6) then
-    R6
-  else if (Z.eqb z 7) then
-    R7
-  else if (Z.eqb z 8) then
-    R8
-  else if (Z.eqb z 9) then
-    R9
-  else
-    R10.
-
-Definition get_dst (i:int64):Z := Int64.unsigned (Int64.shru (Int64.and i (Int64.repr 0xfff)) (Int64.repr 8)).
-Definition get_src (i:int64):Z := Int64.unsigned (Int64.shru (Int64.and i (Int64.repr 0xffff)) (Int64.repr 12)).
-
-Definition int64_to_dst_reg (ins: int64): reg :=
-  z_to_reg (get_dst ins).
-
-Definition int64_to_src_reg (ins: int64): reg :=
-  z_to_reg (get_src ins).
-
-Definition get_opcode (ins:int64): nat := Z.to_nat (Int64.unsigned (Int64.and ins (Int64.repr 0xff))).
-
-Definition get_offset (i:int64) := sint16_to_sint32 (int64_to_sint16 (Int64.shru (Int64.shl i (Int64.repr 32)) (Int64.repr 48))).
-
-Definition get_immediate (i1:int64) := int64_to_sint32 (Int64.shru i1 (Int64.repr 32)).

@@ -1,23 +1,35 @@
+(**************************************************************************)
+(*  This file is part of CertrBPF,                                        *)
+(*  a formally verified rBPF verifier + interpreter + JIT in Coq.         *)
+(*                                                                        *)
+(*  Copyright (C) 2022 Inria                                              *)
+(*                                                                        *)
+(*  This program is free software; you can redistribute it and/or modify  *)
+(*  it under the terms of the GNU General Public License as published by  *)
+(*  the Free Software Foundation; either version 2 of the License, or     *)
+(*  (at your option) any later version.                                   *)
+(*                                                                        *)
+(*  This program is distributed in the hope that it will be useful,       *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *)
+(*  GNU General Public License for more details.                          *)
+(*                                                                        *)
+(**************************************************************************)
+
 From Coq Require Import List ZArith.
 Import ListNotations.
 
 From compcert.cfrontend Require Csyntax Ctypes Cop.
-From compcert.common Require Import Values.
+From compcert.common Require Import Values Memory.
 From compcert.lib Require Import Integers.
-
-From bpf.comm Require Import Int16.
 
 (** Coq2C: Values.val -> unsigned long long or unsigned int
   *)
 
 (******************** Val2PTR *******************)
 
+Definition cmp_ptr32_null (m: Mem.mem) (v: val): option bool := Val.cmpu_bool (Mem.valid_pointer m) Ceq v Vnullptr.
 
-Definition comp_eq_ptr8_zero (x: val): bool :=
-  match x with
-  | Vint n1 => Int.eq n1 Int.zero
-  | _ => false
-  end.
 
 (** Type signature: val -> val -> option val
     we use `val32_divu` to replace `Val.divu`
@@ -143,18 +155,10 @@ Definition complu_set (x y: val): bool :=
 
 (******************** Val Type Casting *******************)
 
-(** ptr2valu32: ptr -> u32
-
-*)
-(*
-Definition ptr2valu32 (ptr: valptr32_t): valu32_t :=
-  match ptr with
-  | Vptr _ _ => here we need memory_region information...*)
-
 (** sint16_to_vlong: sint16_t -> Val
-    *)
+    *) (*
 Definition sint16_to_vlong (i:int16): val :=
-  Vlong (Int64.repr (Int16.signed i)).
+  Vlong (Int64.repr (Int16.signed i)). *)
 
 (** _to_u32 : vlong_to_vint <==> val_intoflongu
   *)
@@ -183,19 +187,17 @@ Definition int64_to_vlong (v: int64): val := Vlong v.
 Definition int64_to_int8 (x: int64): byte := Byte.repr (Int64.unsigned x).
 
 (** sint16_to_uint64: sint16_t -> uint64_t
-  *)
-Definition sint16_to_int64 (x: int16): int64 := Int64.repr (Int16.signed x).
+  *) (*
+Definition sint16_to_int64 (x: int16): int64 := Int64.repr (Int16.signed x). *)
 
-(** sint16_to_sint32: sint16_t -> sint32_t
-  *)
-Definition sint16_to_sint32 (x: int16): int := Int.repr (Int16.signed x).
-
-(** int64_to_sint16: int64_t -> sint16_t
-  *)
-Definition int64_to_sint16 (x: int64): int16 := Int16.repr (Int64.unsigned x).
+Definition int64_to_offset16 (i: int64) := Int.sign_ext 16 (Int.repr (Int64.unsigned i)).
 
 (** int64_to_sint32: int64_t -> sint32_t
   *)
 Definition int64_to_sint32 (x: int64): int := Int.repr (Int64.unsigned x).
+
+Definition sint32_to_uint32 (i: int): int := i.
+
+Definition Int_leu (x y: int): bool := negb (Int.ltu y x).
 
 Definition Int_le (x y: int): bool := negb (Int.lt y x).
